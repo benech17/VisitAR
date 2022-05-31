@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">visitar</string>
-    <string name="mapbox_access_token">pk.eyJ1IjoieHl0MTIzIiwiYSI6ImNsM2syaW5vZjAwbDQza204bWY0dGUyeWYifQ.GkR91ltuFuvZtBK7SO7pdQ</string>
+    <string name="title_activity_aractivity">ARactivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_camera">Camera</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_restaurant">Restaurant</string>
+    <string name="title_infos">Informations</string>
+    <string name="title_histoire">Histoire</string>
+    <string name="title_notifications">Notifications</string>
+
+
 </resources>

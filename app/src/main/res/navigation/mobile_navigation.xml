@@ -23,5 +23,19 @@
         android:label="@string/title_camera"
         tools:layout="@layout/fragment_camera" />
 
+    <fragment
+        android:id="@+id/navigation_information"
+        android:name="fr.yaniv.visitar.ui.information.InformationFragment"
+        android:label="@string/title_infos"
+        tools:layout="fragment_information" />
+
+    <fragment
+        android:id="@+id/navigation_histoire"
+        android:name="fr.yaniv.visitar.ui.histoire.HistoireFragment"
+        android:label="@string/title_histoire"
+        tools:layout="fragment_histoire" />
+
+
+
 
 </navigation>

@@ -1,5 +1,7 @@
 package fr.yaniv.visitar
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -10,11 +12,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import fr.yaniv.visitar.databinding.ActivityAractivityBinding
 import java.util.*
-import android.widget.Button
-import android.widget.EditText
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import fr.yaniv.visitar.ui.modules.CameraModule
 
 class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
@@ -60,6 +62,18 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        // --- Partie Caméra ---
+        // On commence par demander les permissions si ce n'est déjà fait
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 100);
+        // Initialisation & Démarrage de la caméra
+        val cameraPreviewLayout = findViewById<FrameLayout>(R.id.camera_preview)
+        val camera = CameraModule(this, cameraPreviewLayout)
+        camera.startCamera()
+
     }
 
     override fun onInit(status: Int) {

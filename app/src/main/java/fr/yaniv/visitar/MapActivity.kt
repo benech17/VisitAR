@@ -5,9 +5,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
+import com.google.android.material.navigation.NavigationView
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.maps.*
@@ -19,6 +23,7 @@ import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
 import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.core.MapboxNavigationProvider
+//import com.mapbox.navigation.dropin.NavigationView
 import com.mapbox.navigation.ui.tripprogress.model.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -30,8 +35,13 @@ const val REQUEST_LOCATION_PERMISSION = 1
 class MapActivity : AppCompatActivity() {
 
 
+    var navigationView : NavigationView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val btnNav = findViewById<Button>(R.id.btnNav)
+        navigationView = findViewById(R.id.navigationView)
 
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
@@ -100,6 +110,18 @@ class MapActivity : AppCompatActivity() {
         }
         //mapboxNavigation.startTripSession()
         //mapboxNavigation.stopTripSession()
+
+
+        btnNav.setOnClickListener{
+            fun onClick(){
+                mapView!!.setVisibility(View.GONE)
+                navigationView!!.setVisibility(View.VISIBLE)
+            }
+        }
+
+
+
+
     }
 
     override fun onStart() {
@@ -127,7 +149,7 @@ class MapActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
@@ -147,10 +169,11 @@ class MapActivity : AppCompatActivity() {
             )
         }
     }
+
     /*
     fun onCleared() {
         MapboxNavigationProvider.destroy()
     }
-
      */
 }
+

@@ -1,31 +1,33 @@
 package fr.yaniv.visitar
 
-import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.mapbox.geojson.Feature
+import androidx.core.content.ContextCompat
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.style.image.image
+import com.mapbox.maps.*
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
-import com.mapbox.maps.extension.style.layers.generated.symbolLayer
-import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
 import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
+import com.mapbox.maps.plugin.LocationPuck2D
+import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.navigation.base.options.NavigationOptions
+import com.mapbox.navigation.core.MapboxNavigationProvider
+import com.mapbox.navigation.ui.tripprogress.model.*
+
 
 
 var mapView: MapView? = null
 
 class MapActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
@@ -69,10 +71,10 @@ class MapActivity : AppCompatActivity() {
                 }
 
                 +circleLayer("pointsLayer", POINT_SOURCE_ID) {
-
                 }
-            }
-        )
+            })
+
+
     }
 
     override fun onStart() {

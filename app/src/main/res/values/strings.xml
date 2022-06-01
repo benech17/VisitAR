@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">visitar</string>
     <string name="mapbox_access_token">pk.eyJ1IjoieHl0MTIzIiwiYSI6ImNsM2syaW5vZjAwbDQza204bWY0dGUyeWYifQ.GkR91ltuFuvZtBK7SO7pdQ</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

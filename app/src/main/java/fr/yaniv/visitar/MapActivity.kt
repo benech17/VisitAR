@@ -1,9 +1,13 @@
 package fr.yaniv.visitar
 
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.maps.*
@@ -13,21 +17,21 @@ import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
 import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
-import com.mapbox.maps.plugin.LocationPuck2D
-import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.core.MapboxNavigationProvider
 import com.mapbox.navigation.ui.tripprogress.model.*
-
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 
 
 var mapView: MapView? = null
+const val REQUEST_LOCATION_PERMISSION = 1
 
 class MapActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
@@ -75,6 +79,27 @@ class MapActivity : AppCompatActivity() {
             })
 
 
+        /*
+        val navigationOptions = NavigationOptions.Builder(this)
+            .accessToken("YOUR_ACCESS_TOKEN")
+            .build()
+        val mapboxNavigation = MapboxNavigationProvider.create(navigationOptions)
+        */
+        //à gérer après
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestLocationPermission()
+            return
+        }
+        //mapboxNavigation.startTripSession()
+        //mapboxNavigation.stopTripSession()
     }
 
     override fun onStart() {
@@ -96,4 +121,36 @@ class MapActivity : AppCompatActivity() {
         super.onDestroy()
         mapView?.onDestroy()
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
+    private fun requestLocationPermission() {
+        val perms = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (EasyPermissions.hasPermissions(this, *perms)) {
+            Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show()
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "Please grant the location permission",
+                REQUEST_LOCATION_PERMISSION,
+                *perms
+            )
+        }
+    }
+    /*
+    fun onCleared() {
+        MapboxNavigationProvider.destroy()
+    }
+
+     */
 }

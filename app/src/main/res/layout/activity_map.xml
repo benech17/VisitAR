@@ -16,4 +16,10 @@
         mapbox:mapbox_cameraTargetLng="-74.0060"
         mapbox:mapbox_cameraZoom="9.0"
         />
+
+    <com.mapbox.navigation.dropin.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:accessToken="YOUR_ACCESS_TOKEN" />
 </androidx.constraintlayout.widget.ConstraintLayout>

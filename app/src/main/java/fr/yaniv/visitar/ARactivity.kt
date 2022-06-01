@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 
 class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
@@ -31,6 +32,7 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         // view binding button and edit text
         btnSpeak = findViewById(R.id.btn_speak)
         etSpeak = findViewById(R.id.description_home)
+        btnNoSpeak = findViewById(R.id.btn_no_speak)
 
         btnSpeak!!.isEnabled = false
 
@@ -38,6 +40,13 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         tts = TextToSpeech(this, this)
 
         btnSpeak!!.setOnClickListener { speakOut() }
+        btnNoSpeak!!.setOnClickListener{
+            if(tts!!.isSpeaking){
+                tts!!.stop()
+            }else{
+                Toast.makeText(this, "Mode Vocale désactivé", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -68,6 +77,7 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         val text = etSpeak!!.text.toString()
         tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null,"")
     }
+
 
     public override fun onDestroy() {
         // Shutdown TTS when

@@ -1,8 +1,10 @@
+@file:OptIn(ExperimentalPreviewMapboxNavigationAPI::class)
+
 package fr.yaniv.visitar
 
 
+//import com.mapbox.navigation.dropin.NavigationView
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -10,8 +12,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isVisible
-import com.google.android.material.navigation.NavigationView
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.maps.*
@@ -19,29 +19,23 @@ import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
 import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
-import com.mapbox.navigation.base.options.NavigationOptions
-import com.mapbox.navigation.core.MapboxNavigationProvider
-//import com.mapbox.navigation.dropin.NavigationView
+import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
+import com.mapbox.navigation.dropin.NavigationView
 import com.mapbox.navigation.ui.tripprogress.model.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
-
 var mapView: MapView? = null
+var navigationView: NavigationView? = null
 const val REQUEST_LOCATION_PERMISSION = 1
 
 class MapActivity : AppCompatActivity() {
-
-
-    var navigationView : NavigationView? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val btnNav = findViewById<Button>(R.id.btnNav)
-        navigationView = findViewById(R.id.navigationView)
+        setContentView(R.layout.activity_map)
 
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
@@ -52,9 +46,8 @@ class MapActivity : AppCompatActivity() {
         val line = data.features()!!.get(0)
         data.features()!!.removeAt(0)
 
-        //val mapView = MapView(this)
-        setContentView(R.layout.activity_map)
         mapView = findViewById(R.id.mapView)
+        navigationView = findViewById(R.id.navigationView)
         mapView!!.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
         mapView!!.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
@@ -88,7 +81,6 @@ class MapActivity : AppCompatActivity() {
                 }
             })
 
-
         /*
         val navigationOptions = NavigationOptions.Builder(this)
             .accessToken("YOUR_ACCESS_TOKEN")
@@ -111,17 +103,11 @@ class MapActivity : AppCompatActivity() {
         //mapboxNavigation.startTripSession()
         //mapboxNavigation.stopTripSession()
 
-
-        btnNav.setOnClickListener{
-            fun onClick(){
-                mapView!!.setVisibility(View.GONE)
-                navigationView!!.setVisibility(View.VISIBLE)
-            }
+        val btnNav = findViewById<Button>(R.id.btnNav)
+        btnNav.setOnClickListener {
+            mapView!!.setVisibility(View.GONE)
+            navigationView!!.setVisibility(View.VISIBLE)
         }
-
-
-
-
     }
 
     override fun onStart() {

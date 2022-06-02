@@ -23,6 +23,7 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
     private var btnSpeak: Button? = null
     private var btnNoSpeak: Button?= null
     private var etSpeak: TextView? = null
+    var camera: CameraModule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -69,10 +70,13 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_DENIED)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 100);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 100);
         // Initialisation & Démarrage de la caméra
         val cameraPreviewLayout = findViewById<FrameLayout>(R.id.camera_preview)
-        val camera = CameraModule(this, cameraPreviewLayout)
-        camera.startCamera()
+        camera = CameraModule(this, cameraPreviewLayout)
+        camera!!.startCamera()
 
     }
 

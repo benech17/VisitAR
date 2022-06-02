@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import fr.yaniv.visitar.ARactivity
+import fr.yaniv.visitar.R
 import fr.yaniv.visitar.databinding.FragmentCameraBinding
 
 class CameraFragment : Fragment() {
@@ -28,10 +31,14 @@ class CameraFragment : Fragment() {
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textCamera
-        cameraViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        val activity = activity as ARactivity
+        val camera = activity.camera!!;
+
+        val captureButton = binding.takePicutreButton
+        captureButton.setOnClickListener({
+            camera.takeImageCapture()
+        })
+
         return root
     }
 

@@ -15,13 +15,6 @@
         app:mapbox_cameraTargetLng="-74.0060"
         app:mapbox_cameraZoom="9.0" />
 
-    <com.mapbox.navigation.dropin.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:accessToken="YOUR_ACCESS_TOKEN" />
-
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -46,4 +39,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </LinearLayout>
+
+    <com.mapbox.navigation.dropin.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:accessToken="YOUR_ACCESS_TOKEN" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

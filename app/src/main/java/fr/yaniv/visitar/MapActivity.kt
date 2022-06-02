@@ -23,6 +23,12 @@ import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
 import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
+import com.mapbox.navigation.base.options.NavigationOptions
+import com.mapbox.navigation.core.MapboxNavigation
+import com.mapbox.navigation.core.MapboxNavigationProvider
+import com.mapbox.navigation.core.replay.MapboxReplayer
+import com.mapbox.navigation.core.replay.ReplayLocationEngine
+import com.mapbox.navigation.core.replay.route.ReplayRouteMapper
 import com.mapbox.navigation.dropin.NavigationView
 import com.mapbox.navigation.ui.tripprogress.model.*
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -33,6 +39,10 @@ var navigationView: NavigationView? = null
 const val REQUEST_LOCATION_PERMISSION = 1
 
 class MapActivity : AppCompatActivity() {
+    private lateinit var mapboxNavigation: MapboxNavigation
+    private val mapboxReplayer = MapboxReplayer()
+    private val replayLocationEngine = ReplayLocationEngine(mapboxReplayer)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
@@ -81,32 +91,36 @@ class MapActivity : AppCompatActivity() {
                 }
             })
 
-        /*
-        val navigationOptions = NavigationOptions.Builder(this)
-            .accessToken("YOUR_ACCESS_TOKEN")
-            .build()
-        val mapboxNavigation = MapboxNavigationProvider.create(navigationOptions)
-        */
-        //à gérer après
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestLocationPermission()
-            return
+        mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
+            MapboxNavigationProvider.retrieve()
+        } else {
+            MapboxNavigationProvider.create(
+                NavigationOptions.Builder(this.applicationContext)
+                    .accessToken(getString(R.string.mapbox_access_token))
+                    .locationEngine(replayLocationEngine)
+                    .build()
+            )
         }
-        //mapboxNavigation.startTripSession()
-        //mapboxNavigation.stopTripSession()
 
         val btnNav = findViewById<Button>(R.id.btnNav)
         btnNav.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestLocationPermission()
+                return@setOnClickListener
+            }
+
             mapView!!.setVisibility(View.GONE)
             navigationView!!.setVisibility(View.VISIBLE)
+
+            mapboxNavigation.startTripSession()
+            //mapboxNavigation.stopTripSession()
         }
     }
 

@@ -6,17 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".ui.information.InformationFragment">
 
-    <TextView
-        android:id="@+id/text_histoire"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/carousel_shape"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="80dp"
+        >
+
+
+        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+            android:id="@+id/carousel"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+
+            app:showTopShadow="false"
+            app:topShadowAlpha="0.6"
+            app:topShadowHeight="32dp"
+
+            app:showBottomShadow="false"
+            app:bottomShadowAlpha="0.6"
+            app:bottomShadowHeight="64dp"
+
+            app:showCaption="false"
+
+            app:showIndicator="true"
+            app:indicatorMargin="0dp"
+
+
+            app:carouselBackground="#00000000"
+            app:imagePlaceholder="@drawable/ic_histoire"
+
+            app:carouselPadding="0dp"
+            app:carouselPaddingBottom="0dp"
+            app:carouselPaddingEnd="0dp"
+            app:carouselPaddingStart="0dp"
+            app:carouselPaddingTop="0dp"
+
+            />
+    </RelativeLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

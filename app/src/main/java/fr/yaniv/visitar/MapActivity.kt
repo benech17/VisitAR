@@ -38,8 +38,10 @@ import com.mapbox.maps.*
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
+import com.mapbox.maps.extension.style.layers.getLayer
 import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
 import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
+import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.style
@@ -571,6 +573,9 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun setRouteAndStartNavigation(routes: List<DirectionsRoute>) {
+        mapView.getMapboxMap().getStyle {
+            it.getLayer("linelayer")?.let { layer -> layer.visibility(Visibility.NONE) }
+        }
         mapboxNavigation.setRoutes(routes)
         startSimulation(routes.first())
 
@@ -582,6 +587,9 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun clearRouteAndStopNavigation() {
+        mapView.getMapboxMap().getStyle {
+            it.getLayer("linelayer")?.let { layer -> layer.visibility(Visibility.VISIBLE) }
+        }
         mapboxNavigation.setRoutes(listOf())
         mapboxReplayer.stop()
 

@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/drawable/ic_puck_location.xml" value="0.1" />
         <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_map.xml" value="0.2" />
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_map2.xml" value="0.15534420289855072" />
         <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/my_speed_limit_layout.xml" value="0.17028985507246377" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1425" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1425" />

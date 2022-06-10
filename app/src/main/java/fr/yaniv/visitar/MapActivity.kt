@@ -57,8 +57,11 @@ import com.mapbox.navigation.base.extensions.applyDefaultNavigationOptions
 import com.mapbox.navigation.base.extensions.applyLanguageAndVoiceUnitOptions
 import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.base.route.*
+import com.mapbox.navigation.base.trip.model.RouteLegProgress
+import com.mapbox.navigation.base.trip.model.RouteProgress
 import com.mapbox.navigation.core.MapboxNavigation
 import com.mapbox.navigation.core.MapboxNavigationProvider
+import com.mapbox.navigation.core.arrival.ArrivalObserver
 import com.mapbox.navigation.core.directions.session.RoutesObserver
 import com.mapbox.navigation.core.formatter.MapboxDistanceFormatter
 import com.mapbox.navigation.core.replay.MapboxReplayer
@@ -97,6 +100,7 @@ import com.mapbox.navigation.ui.voice.model.SpeechError
 import com.mapbox.navigation.ui.voice.model.SpeechValue
 import com.mapbox.navigation.ui.voice.model.SpeechVolume
 import com.mapbox.navigation.ui.voice.view.MapboxSoundButton
+import com.mapbox.turf.TurfMeasurement.bbox
 import com.mapbox.turf.TurfMeasurement.destination
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -136,6 +140,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var stop: ImageView
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
+    private var destinationReached: Boolean = false
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
     private val overviewPadding: EdgeInsets by lazy {
@@ -293,10 +298,36 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
+    private val arrivalObserver = object : ArrivalObserver {
+        override fun onWaypointArrival(routeProgress: RouteProgress) {
+            // do something when the user arrives at a waypoint
+        }
+
+        override fun onNextRouteLegStart(routeLegProgress: RouteLegProgress) {
+            // do something when the user starts a new leg
+        }
+
+        override fun onFinalDestinationArrival(routeProgress: RouteProgress) {
+            if (!destinationReached) {
+                mapView.getMapboxMap().getStyle {
+                    it.getLayer("linelayer")?.visibility(Visibility.NONE)
+                }
+                setRouteAndStartNavigation(listOf(circuit))
+                destinationReached = true
+            }
+            else {
+                clearRouteAndStopNavigation()
+                destinationReached = false
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
+        destinationReached = false
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
         val RED_ICON_ID = "PointIcon"
@@ -355,6 +386,7 @@ class MapActivity : AppCompatActivity() {
             .waypoints(0,points.size-1)
             .steps(true)
             .voiceInstructions(true)
+            .language(Locale.FRENCH)
             .bannerInstructions(true)
             .profile(DirectionsCriteria.PROFILE_WALKING)
             .build()
@@ -516,6 +548,8 @@ class MapActivity : AppCompatActivity() {
                 enabled = true
             }
 
+            btnNav.text = "Move to Itinerary"
+
             /*
             mapView.gestures.addOnMapLongClickListener { point ->
                 findRoute(point)
@@ -523,7 +557,8 @@ class MapActivity : AppCompatActivity() {
             }
             */
 
-            setRouteAndStartNavigation(listOf(circuit))
+            findRoute(points[0])
+            //setRouteAndStartNavigation(listOf(circuit))
             mapboxNavigation.startTripSession()
             recenterButton.visibility = View.VISIBLE
         }
@@ -573,9 +608,6 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun setRouteAndStartNavigation(routes: List<DirectionsRoute>) {
-        mapView.getMapboxMap().getStyle {
-            it.getLayer("linelayer")?.let { layer -> layer.visibility(Visibility.NONE) }
-        }
         mapboxNavigation.setRoutes(routes)
         startSimulation(routes.first())
 
@@ -617,16 +649,17 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.registerLocationObserver(locationObserver)
         mapboxNavigation.registerVoiceInstructionsObserver(voiceInstructionsObserver)
         mapboxNavigation.registerRouteProgressObserver(replayProgressObserver)
+        mapboxNavigation.registerArrivalObserver(arrivalObserver)
 
         if (mapboxNavigation.getRoutes().isEmpty()) {
-// if simulation is enabled (ReplayLocationEngine set to NavigationOptions)
-// but we're not simulating yet,
-// push a single location sample to establish origin
+        // if simulation is enabled (ReplayLocationEngine set to NavigationOptions)
+        // but we're not simulating yet,
+        // push a single location sample to establish origin
             mapboxReplayer.pushEvents(
                 listOf(
                     ReplayRouteMapper.mapToUpdateLocation(
                         eventTimestamp = 0.0,
-                        point = points[0]
+                        point = Point.fromLngLat(2.3389,48.8525 )
                     )
                 )
             )
@@ -641,6 +674,7 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.unregisterLocationObserver(locationObserver)
         mapboxNavigation.unregisterVoiceInstructionsObserver(voiceInstructionsObserver)
         mapboxNavigation.unregisterRouteProgressObserver(replayProgressObserver)
+        mapboxNavigation.unregisterArrivalObserver(arrivalObserver)
     }
 
     override fun onLowMemory() {

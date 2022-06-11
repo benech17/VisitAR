@@ -634,10 +634,10 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.setRoutes(listOf())
         mapboxReplayer.stop()
 
-        soundButton.visibility = View.INVISIBLE
-        maneuverView.visibility = View.INVISIBLE
-        routeOverview.visibility = View.INVISIBLE
-        tripProgressCard.visibility = View.INVISIBLE
+        soundButton.visibility = View.GONE
+        maneuverView.visibility = View.GONE
+        routeOverview.visibility = View.GONE
+        tripProgressCard.visibility = View.GONE
     }
 
     private fun startSimulation(route: DirectionsRoute) {

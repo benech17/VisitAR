@@ -72,6 +72,7 @@ import com.mapbox.navigation.core.trip.session.LocationMatcherResult
 import com.mapbox.navigation.core.trip.session.LocationObserver
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver
 import com.mapbox.navigation.core.trip.session.VoiceInstructionsObserver
+import com.mapbox.navigation.dropin.view.MapboxExtendableButton
 import com.mapbox.navigation.ui.base.util.MapboxNavigationConsumer
 import com.mapbox.navigation.ui.maneuver.api.MapboxManeuverApi
 import com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
@@ -137,7 +138,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var maneuverView: MapboxManeuverView
     private lateinit var tripProgressCard: CardView
     private lateinit var tripProgressView: MapboxTripProgressView
-    private lateinit var stop: ImageView
+    private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
     private var destinationReached: Boolean = false
@@ -312,10 +313,13 @@ class MapActivity : AppCompatActivity() {
                 mapView.getMapboxMap().getStyle {
                     it.getLayer("linelayer")?.visibility(Visibility.NONE)
                 }
-                setRouteAndStartNavigation(listOf(circuit))
                 destinationReached = true
+                findViewById<Button>(R.id.btnNav).text = "Start Navigating"
+                setRouteAndStartNavigation(listOf(circuit))
             }
             else {
+                //btnNav.text = "Move to Itinerary"
+                findViewById<Button>(R.id.btnNav).text = "Move to Itinerary"
                 clearRouteAndStopNavigation()
                 destinationReached = false
             }
@@ -389,6 +393,7 @@ class MapActivity : AppCompatActivity() {
             .language(Locale.FRENCH)
             .bannerInstructions(true)
             .profile(DirectionsCriteria.PROFILE_WALKING)
+            .voiceUnits(DirectionsCriteria.METRIC)
             .build()
 
         mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
@@ -548,16 +553,20 @@ class MapActivity : AppCompatActivity() {
                 enabled = true
             }
 
-            btnNav.text = "Move to Itinerary"
-
             /*
             mapView.gestures.addOnMapLongClickListener { point ->
                 findRoute(point)
                 true
             }
             */
+            if (!destinationReached) {
+                btnNav.text = "Move to Itinerary"
+                findRoute(points[0])
+            }
+            else {
+                setRouteAndStartNavigation(listOf(circuit))
+            }
 
-            findRoute(points[0])
             //setRouteAndStartNavigation(listOf(circuit))
             mapboxNavigation.startTripSession()
             recenterButton.visibility = View.VISIBLE

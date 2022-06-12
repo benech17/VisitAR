@@ -103,6 +103,8 @@ import com.mapbox.navigation.ui.voice.model.SpeechVolume
 import com.mapbox.navigation.ui.voice.view.MapboxSoundButton
 import com.mapbox.turf.TurfMeasurement.bbox
 import com.mapbox.turf.TurfMeasurement.destination
+//import com.mapbox.turf.TurfMisc.INDEX_KEY
+import com.mapbox.turf.TurfMisc.nearestPointOnLine
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import retrofit2.Call
@@ -141,6 +143,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
+    private lateinit var photos: MutableList<Point>
     private var destinationReached: Boolean = false
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
@@ -382,7 +385,13 @@ class MapActivity : AppCompatActivity() {
                 }
             })
 
-        points = (Objects.requireNonNull(line.geometry()) as LineString).coordinates()
+        //partie à modifier
+        val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
+        points = JSONLine.coordinates()
+        for (feature in data.features()!!) {
+            val waypoint = nearestPointOnLine(feature.geometry() as Point,JSONLine.coordinates())
+            //points.add(waypoint.getNumberProperty(INDEX_KEY) as Int,waypoint.geometry() as Point)
+        }
 
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))

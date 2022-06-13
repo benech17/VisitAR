@@ -103,7 +103,7 @@ import com.mapbox.navigation.ui.voice.model.SpeechVolume
 import com.mapbox.navigation.ui.voice.view.MapboxSoundButton
 import com.mapbox.turf.TurfMeasurement.bbox
 import com.mapbox.turf.TurfMeasurement.destination
-//import com.mapbox.turf.TurfMisc.INDEX_KEY
+import com.mapbox.turf.TurfMisc
 import com.mapbox.turf.TurfMisc.nearestPointOnLine
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -387,16 +387,23 @@ class MapActivity : AppCompatActivity() {
 
         //partie à modifier
         val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
+        var waypointList: MutableList<Int> = mutableListOf(0)
         points = JSONLine.coordinates()
         for (feature in data.features()!!) {
             val waypoint = nearestPointOnLine(feature.geometry() as Point,JSONLine.coordinates())
-            //points.add(waypoint.getNumberProperty(INDEX_KEY) as Int,waypoint.geometry() as Point)
+            val waypointIndex = (waypoint.getNumberProperty("index") as Int) + 1
+            points.add(waypointIndex,waypoint.geometry() as Point)
+            waypointList.add(waypointIndex)
         }
+        waypointList.add(points.size-1)
+        waypointList.sort()
+        val waypointArray = waypointList.toTypedArray()
+
 
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))
             .coordinates(points)
-            .waypoints(0,points.size-1)
+            .waypoints(0,*waypointList.subList(1,6).toTypedArray(),*waypointList.subList(8,15).toTypedArray(),points.size-1)
             .steps(true)
             .voiceInstructions(true)
             .language(Locale.FRENCH)
@@ -579,6 +586,7 @@ class MapActivity : AppCompatActivity() {
             //setRouteAndStartNavigation(listOf(circuit))
             mapboxNavigation.startTripSession()
             recenterButton.visibility = View.VISIBLE
+            //Toast.makeText(this@MapActivity,waypointArray.get(3).toString(),Toast.LENGTH_LONG).show()
         }
     }
 
@@ -677,7 +685,7 @@ class MapActivity : AppCompatActivity() {
                 listOf(
                     ReplayRouteMapper.mapToUpdateLocation(
                         eventTimestamp = 0.0,
-                        point = Point.fromLngLat(2.3389,48.8525 )
+                        point = Point.fromLngLat(2.3294,48.8595 )
                     )
                 )
             )

@@ -17,8 +17,5 @@ class MainActivity : AppCompatActivity() {
             val switchActivityIntent = Intent(this, MapActivity::class.java)
             startActivity(switchActivityIntent)
         }
-
-        val Ar = Intent(this, ARactivity::class.java)
-        startActivity(Ar)
     }
 }

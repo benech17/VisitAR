@@ -7,12 +7,14 @@ package fr.yaniv.visitar
 //import com.mapbox.navigation.dropin.NavigationView
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -389,8 +391,6 @@ class MapActivity : AppCompatActivity() {
                     lineColor("red")
                 }
                 */
-                +circleLayer("pointsLayer", POINT_SOURCE_ID) {
-                }
 
                 +symbolLayer("pointsLayer", POINT_SOURCE_ID) {
                     iconImage(RED_ICON_ID)
@@ -684,6 +684,9 @@ class MapActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+
+        Log.i("MDR", "Ptn, ça redémarre");
+
         super.onStart()
         mapboxNavigation.registerRoutesObserver(routesObserver)
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
@@ -757,6 +760,12 @@ class MapActivity : AppCompatActivity() {
                 *perms
             )
         }
+    }
+
+    private fun startARActivity() {
+        val intent = Intent(this, ARactivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 }
 

@@ -3,7 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/drawable/ic_puck_location.xml" value="0.1" />
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_map.xml" value="0.25" />
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/activity_map2.xml" value="0.15534420289855072" />
+        <entry key="..\:/Users/utilisateur/Desktop/PMR/VisitAR/app/src/main/res/layout/my_speed_limit_layout.xml" value="0.17028985507246377" />
         <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/drawable/carousel_shape.xml" value="0.1" />
+        <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/drawable/ic_red_marker.xml" value="0.8" />
+        <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/drawable/map_marker.xml" value="0.1" />
         <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/layout/activity_aractivity.xml" value="0.1" />
         <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/layout/carousel_layout_1.xml" value="0.19194312796208532" />
         <entry key="..\:/Users/bobba/OneDrive - Centrale Lille/Documents/Centrale/PMR/VisitARPMR/app/src/main/res/layout/fragment_camera.xml" value="0.152" />

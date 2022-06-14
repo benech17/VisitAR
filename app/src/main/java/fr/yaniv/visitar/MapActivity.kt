@@ -35,10 +35,13 @@ import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
 import com.mapbox.maps.*
+import com.mapbox.maps.extension.style.image.image
 import com.mapbox.maps.extension.style.layers.addLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
+import com.mapbox.maps.extension.style.layers.generated.symbolLayer
 import com.mapbox.maps.extension.style.layers.getLayer
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.mapbox.maps.extension.style.layers.properties.generated.LineCap
 import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
 import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
@@ -94,6 +97,7 @@ import com.mapbox.navigation.ui.maps.route.line.model.RouteLine
 import com.mapbox.navigation.ui.tripprogress.api.MapboxTripProgressApi
 import com.mapbox.navigation.ui.tripprogress.model.*
 import com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView
+import com.mapbox.navigation.ui.utils.internal.extensions.getBitmap
 import com.mapbox.navigation.ui.voice.api.MapboxSpeechApi
 import com.mapbox.navigation.ui.voice.api.MapboxVoiceInstructionsPlayer
 import com.mapbox.navigation.ui.voice.model.SpeechAnnouncement
@@ -364,6 +368,10 @@ class MapActivity : AppCompatActivity() {
 
         mapView.getMapboxMap().loadStyle(
             styleExtension = style(Style.MAPBOX_STREETS) {
+                +image(RED_ICON_ID) {
+                    val marker = resources.getDrawable(R.drawable.ic_red_marker).getBitmap()
+                    bitmap(marker)
+                }
                 /*
                 +geoJsonSource(LINE_SOURCE_ID) {
                     feature(line)
@@ -382,6 +390,13 @@ class MapActivity : AppCompatActivity() {
                 }
                 */
                 +circleLayer("pointsLayer", POINT_SOURCE_ID) {
+                }
+
+                +symbolLayer("pointsLayer", POINT_SOURCE_ID) {
+                    iconImage(RED_ICON_ID)
+                    iconAnchor(IconAnchor.BOTTOM)
+                    iconSize(0.5)
+
                 }
             })
 

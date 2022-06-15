@@ -151,6 +151,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var routeOverview: MapboxRouteOverviewButton
     private lateinit var maneuverView: MapboxManeuverView
     private lateinit var tripProgressCard: CardView
+    private lateinit var switchActivityCard: CardView
     private lateinit var tripProgressView: MapboxTripProgressView
     private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
@@ -250,16 +251,13 @@ class MapActivity : AppCompatActivity() {
             featureLocation.longitude = closestFeature.longitude()
             val value = enhancedLocation.distanceTo(featureLocation)
             if (value <= 50.0) {
-                tripProgressView.visibility = View.INVISIBLE
-                stop.visibility = View.INVISIBLE
+                switchActivityCard.visibility = View.VISIBLE
                 tripProgressCard.setOnClickListener {
                     startARActivity()
                     mapboxReplayer.stop()
                 }
             } else {
-                tripProgressView.visibility = View.VISIBLE
-                stop.visibility = View.VISIBLE
-                tripProgressCard.setOnClickListener {}
+                switchActivityCard.visibility = View.GONE
             }
 
             viewportDataSource.onLocationChanged(enhancedLocation)
@@ -381,6 +379,7 @@ class MapActivity : AppCompatActivity() {
         routeOverview = findViewById(R.id.routeOverview)
         maneuverView = findViewById(R.id.maneuverView)
         tripProgressCard = findViewById(R.id.tripProgressCard)
+        switchActivityCard = findViewById(R.id.switchActivityCard)
         tripProgressView = findViewById(R.id.tripProgressView)
         stop = findViewById(R.id.stop)
 

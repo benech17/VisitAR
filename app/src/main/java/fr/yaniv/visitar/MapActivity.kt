@@ -253,8 +253,8 @@ class MapActivity : AppCompatActivity() {
                 tripProgressView.visibility = View.INVISIBLE
                 stop.visibility = View.INVISIBLE
                 tripProgressCard.setOnClickListener {
-                    Toast.makeText(this@MapActivity, "switch activity", Toast.LENGTH_SHORT)
-                        .show()
+                    startARActivity()
+                    mapboxReplayer.stop()
                 }
             } else {
                 tripProgressView.visibility = View.VISIBLE
@@ -686,9 +686,6 @@ class MapActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-
-        Log.i("MDR", "Ptn, ça redémarre");
-
         super.onStart()
         mapboxNavigation.registerRoutesObserver(routesObserver)
         mapboxNavigation.registerRouteProgressObserver(routeProgressObserver)
@@ -710,6 +707,9 @@ class MapActivity : AppCompatActivity() {
                 )
             )
             mapboxReplayer.playFirstLocation()
+        }
+        else {
+            mapboxReplayer.play()
         }
     }
 

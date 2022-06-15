@@ -30,12 +30,10 @@ import com.mapbox.api.matching.v5.MapboxMapMatching
 import com.mapbox.api.matching.v5.models.MapMatchingResponse
 import com.mapbox.bindgen.Expected
 import com.mapbox.core.constants.Constants.PRECISION_6
-import com.mapbox.geojson.Feature
-import com.mapbox.geojson.FeatureCollection
-import com.mapbox.geojson.LineString
-import com.mapbox.geojson.Point
+import com.mapbox.geojson.*
 import com.mapbox.maps.*
 import com.mapbox.maps.extension.style.layers.addLayer
+import com.mapbox.maps.extension.style.layers.generated.CircleLayer
 import com.mapbox.maps.extension.style.layers.generated.circleLayer
 import com.mapbox.maps.extension.style.layers.generated.lineLayer
 import com.mapbox.maps.extension.style.layers.getLayer
@@ -44,6 +42,7 @@ import com.mapbox.maps.extension.style.layers.properties.generated.LineJoin
 import com.mapbox.maps.extension.style.layers.properties.generated.Visibility
 import com.mapbox.maps.extension.style.sources.addSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.sources.getSource
 import com.mapbox.maps.extension.style.style
 import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.LocationPuck2D
@@ -55,6 +54,8 @@ import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
 import com.mapbox.navigation.base.TimeFormat
 import com.mapbox.navigation.base.extensions.applyDefaultNavigationOptions
 import com.mapbox.navigation.base.extensions.applyLanguageAndVoiceUnitOptions
+import com.mapbox.navigation.base.formatter.DistanceFormatterOptions
+import com.mapbox.navigation.base.formatter.UnitType
 import com.mapbox.navigation.base.options.NavigationOptions
 import com.mapbox.navigation.base.route.*
 import com.mapbox.navigation.base.trip.model.RouteLegProgress
@@ -68,6 +69,8 @@ import com.mapbox.navigation.core.replay.MapboxReplayer
 import com.mapbox.navigation.core.replay.ReplayLocationEngine
 import com.mapbox.navigation.core.replay.route.ReplayProgressObserver
 import com.mapbox.navigation.core.replay.route.ReplayRouteMapper
+import com.mapbox.navigation.core.reroute.RerouteController
+import com.mapbox.navigation.core.reroute.RerouteState
 import com.mapbox.navigation.core.trip.session.LocationMatcherResult
 import com.mapbox.navigation.core.trip.session.LocationObserver
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver
@@ -75,6 +78,7 @@ import com.mapbox.navigation.core.trip.session.VoiceInstructionsObserver
 import com.mapbox.navigation.dropin.view.MapboxExtendableButton
 import com.mapbox.navigation.ui.base.util.MapboxNavigationConsumer
 import com.mapbox.navigation.ui.maneuver.api.MapboxManeuverApi
+import com.mapbox.navigation.ui.maneuver.model.ManeuverOptions
 import com.mapbox.navigation.ui.maneuver.view.MapboxManeuverView
 import com.mapbox.navigation.ui.maps.camera.NavigationCamera
 import com.mapbox.navigation.ui.maps.camera.data.MapboxNavigationViewportDataSource
@@ -101,9 +105,10 @@ import com.mapbox.navigation.ui.voice.model.SpeechError
 import com.mapbox.navigation.ui.voice.model.SpeechValue
 import com.mapbox.navigation.ui.voice.model.SpeechVolume
 import com.mapbox.navigation.ui.voice.view.MapboxSoundButton
+import com.mapbox.navigation.utils.internal.toPoint
+import com.mapbox.turf.*
 import com.mapbox.turf.TurfMeasurement.bbox
 import com.mapbox.turf.TurfMeasurement.destination
-import com.mapbox.turf.TurfMisc
 import com.mapbox.turf.TurfMisc.nearestPointOnLine
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -111,6 +116,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import java.util.Locale.FRENCH
 
 
 const val REQUEST_LOCATION_PERMISSION = 1
@@ -143,8 +149,11 @@ class MapActivity : AppCompatActivity() {
     private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
-    private lateinit var photos: MutableList<Point>
+    private lateinit var waypointList: MutableList<Feature>
+    private lateinit var wayPointList: MutableList<Point>
     private var destinationReached: Boolean = false
+    private var isNearWaypoint: Boolean = false
+    private var nextIndex = 0
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
     private val overviewPadding: EdgeInsets by lazy {
@@ -230,6 +239,24 @@ class MapActivity : AppCompatActivity() {
                 location = enhancedLocation,
                 keyPoints = locationMatcherResult.keyPoints,
             )
+
+            val closestFeature = TurfClassification.nearestPoint(enhancedLocation.toPoint(),wayPointList)
+            val featureLocation = Location("")
+            featureLocation.latitude = closestFeature.latitude()
+            featureLocation.longitude = closestFeature.longitude()
+            val value = enhancedLocation.distanceTo(featureLocation)
+            if (value <= 50.0) {
+                tripProgressView.visibility = View.INVISIBLE
+                stop.visibility = View.INVISIBLE
+                tripProgressCard.setOnClickListener {
+                    Toast.makeText(this@MapActivity, "switch activity", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                tripProgressView.visibility = View.VISIBLE
+                stop.visibility = View.VISIBLE
+                tripProgressCard.setOnClickListener {}
+            }
 
             viewportDataSource.onLocationChanged(enhancedLocation)
             viewportDataSource.evaluate()
@@ -341,7 +368,7 @@ class MapActivity : AppCompatActivity() {
         val resources = this.getResources()
         val polygonFeatureJson = resources.openRawResource(R.raw.carte_projet_pmr).bufferedReader().use{ it.readText() }
         val data = FeatureCollection.fromJson(polygonFeatureJson)
-        val line = data.features()!!.get(0)
+        var line = data.features()!!.get(0)
         data.features()!!.removeAt(0)
 
         mapView = findViewById(R.id.mapView)
@@ -362,51 +389,18 @@ class MapActivity : AppCompatActivity() {
             ).zoom(14.0).build()
         )
 
-        mapView.getMapboxMap().loadStyle(
-            styleExtension = style(Style.MAPBOX_STREETS) {
-                /*
-                +geoJsonSource(LINE_SOURCE_ID) {
-                    feature(line)
-                }
-                */
-                +geoJsonSource(POINT_SOURCE_ID) {
-                    featureCollection(data)
-                }
-                /*
-                +lineLayer("linelayer", LINE_SOURCE_ID) {
-                    lineCap(LineCap.ROUND)
-                    lineJoin(LineJoin.ROUND)
-                    lineOpacity(0.7)
-                    lineWidth(8.0)
-                    lineColor("red")
-                }
-                */
-                +circleLayer("pointsLayer", POINT_SOURCE_ID) {
-                }
-            })
-
-        //partie à modifier
         val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
-        var waypointList: MutableList<Int> = mutableListOf(0)
         points = JSONLine.coordinates()
-        for (feature in data.features()!!) {
-            val waypoint = nearestPointOnLine(feature.geometry() as Point,JSONLine.coordinates())
-            val waypointIndex = (waypoint.getNumberProperty("index") as Int) + 1
-            points.add(waypointIndex,waypoint.geometry() as Point)
-            waypointList.add(waypointIndex)
-        }
-        waypointList.add(points.size-1)
-        waypointList.sort()
-        val waypointArray = waypointList.toTypedArray()
-
+        waypointList = mutableListOf()
 
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))
             .coordinates(points)
-            .waypoints(0,*waypointList.subList(1,6).toTypedArray(),*waypointList.subList(8,15).toTypedArray(),points.size-1)
+            .waypoints(0,points.size-1)
+            .tidy(false)
             .steps(true)
             .voiceInstructions(true)
-            .language(Locale.FRENCH)
+            .language(FRENCH)
             .bannerInstructions(true)
             .profile(DirectionsCriteria.PROFILE_WALKING)
             .voiceUnits(DirectionsCriteria.METRIC)
@@ -416,9 +410,10 @@ class MapActivity : AppCompatActivity() {
             override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
                 if (response.isSuccessful) {
                     val matching = response.body()!!.matchings()!![0]
+                    line = Feature.fromGeometry(LineString.fromPolyline(matching.geometry()!!, PRECISION_6))
                     mapView.getMapboxMap().getStyle()!!.addSource(
                         geoJsonSource(LINE_SOURCE_ID) {
-                            feature(Feature.fromGeometry(LineString.fromPolyline(matching.geometry()!!, PRECISION_6)))
+                            feature(line)
                         })
                     mapView.getMapboxMap().getStyle()!!.addLayer(
                         lineLayer("linelayer", LINE_SOURCE_ID) {
@@ -431,6 +426,20 @@ class MapActivity : AppCompatActivity() {
                     circuit = matching.toDirectionRoute().toBuilder()
                         .routeIndex("0")
                         .build()
+                    for (feature in data.features()!!) {
+                        val waypoint = nearestPointOnLine(feature.geometry() as Point,(line.geometry() as LineString).coordinates())
+                        waypointList.add(waypoint)
+                    }
+                    waypointList.sortBy { element -> element.getNumberProperty("index").toInt() }
+                    wayPointList = mutableListOf()
+                    waypointList.forEach { feature -> wayPointList.add(feature.geometry() as Point) }
+                    mapView.getMapboxMap().getStyle()!!.addSource(
+                        geoJsonSource(POINT_SOURCE_ID) {
+                            featureCollection(FeatureCollection.fromFeatures(waypointList))
+                        })
+                    mapView.getMapboxMap().getStyle()!!.addLayer(
+                        circleLayer("pointLayer", POINT_SOURCE_ID) {
+                        })
                 }
             }
             override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
@@ -443,12 +452,12 @@ class MapActivity : AppCompatActivity() {
             MapboxNavigationProvider.create(
                 NavigationOptions.Builder(this.applicationContext)
                     .accessToken(getString(R.string.mapbox_access_token))
+                    .distanceFormatterOptions(DistanceFormatterOptions.Builder(this).locale(FRENCH).unitType(UnitType.METRIC).build())
                     .locationEngine(replayLocationEngine)
                     .build()
             )
         }
         mapboxNavigation.registerLocationObserver(locationObserver)
-        mapboxNavigation.setRerouteController(null)
 
         val btnNav = findViewById<Button>(R.id.btnNav)
         btnNav.setOnClickListener {
@@ -501,7 +510,8 @@ class MapActivity : AppCompatActivity() {
             val distanceFormatterOptions = mapboxNavigation.navigationOptions.distanceFormatterOptions
 
             maneuverApi = MapboxManeuverApi(
-                MapboxDistanceFormatter(distanceFormatterOptions)
+                MapboxDistanceFormatter(distanceFormatterOptions),
+                ManeuverOptions.Builder().filterDuplicateManeuvers(true).build()
             )
 
             tripProgressApi = MapboxTripProgressApi(
@@ -510,13 +520,13 @@ class MapActivity : AppCompatActivity() {
                         DistanceRemainingFormatter(distanceFormatterOptions)
                     )
                     .timeRemainingFormatter(
-                        TimeRemainingFormatter(this)
+                        TimeRemainingFormatter(this, FRENCH)
                     )
                     .percentRouteTraveledFormatter(
                         PercentDistanceTraveledFormatter()
                     )
                     .estimatedTimeToArrivalFormatter(
-                        EstimatedTimeToArrivalFormatter(this, TimeFormat.NONE_SPECIFIED)
+                        EstimatedTimeToArrivalFormatter(this, TimeFormat.TWENTY_FOUR_HOURS)
                     )
                     .build()
             )
@@ -524,12 +534,12 @@ class MapActivity : AppCompatActivity() {
             speechApi = MapboxSpeechApi(
                 this,
                 getString(R.string.mapbox_access_token),
-                Locale.FRENCH.language
+                FRENCH.language
             )
             voiceInstructionsPlayer = MapboxVoiceInstructionsPlayer(
                 this,
                 getString(R.string.mapbox_access_token),
-                Locale.FRENCH.language
+                FRENCH.language
             )
 
             val mapboxRouteLineOptions = MapboxRouteLineOptions.Builder(this)
@@ -600,7 +610,9 @@ class MapActivity : AppCompatActivity() {
             RouteOptions.builder()
                 .applyDefaultNavigationOptions()
                 .profile(DirectionsCriteria.PROFILE_WALKING)
-                .applyLanguageAndVoiceUnitOptions(this)
+                //.applyLanguageAndVoiceUnitOptions(this)
+                .voiceUnits(DirectionsCriteria.METRIC)
+                .language(FRENCH.language)
                 .coordinatesList(listOf(originPoint, destination))
                 .bearingsList(
                     listOf(

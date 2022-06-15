@@ -156,8 +156,6 @@ class MapActivity : AppCompatActivity() {
     private lateinit var waypointList: MutableList<Feature>
     private lateinit var wayPointList: MutableList<Point>
     private var destinationReached: Boolean = false
-    private var isNearWaypoint: Boolean = false
-    private var nextIndex = 0
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
     private val overviewPadding: EdgeInsets by lazy {
@@ -385,6 +383,7 @@ class MapActivity : AppCompatActivity() {
         stop = findViewById(R.id.stop)
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
+        //mapView.getMapboxMap().loadStyle(styleExtension = style(Style.MAPBOX_STREETS){+image(RED_ICON_ID){ContextCompat.getDrawable(this@MapActivity,R.drawable.ic_red_marker)!!.getBitmap()}})
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
                 Point.fromLngLat(
@@ -442,10 +441,7 @@ class MapActivity : AppCompatActivity() {
                             featureCollection(FeatureCollection.fromFeatures(waypointList))
                         })
                     mapView.getMapboxMap().getStyle()!!.addLayer(
-                        symbolLayer("pointLayer", POINT_SOURCE_ID) {
-                        iconImage(RED_ICON_ID)
-                        iconAnchor(IconAnchor.BOTTOM)
-                        iconSize(0.5)
+                        circleLayer("pointLayer", POINT_SOURCE_ID) {
                         })
                 }
             }

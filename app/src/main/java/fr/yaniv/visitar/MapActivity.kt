@@ -158,8 +158,8 @@ class MapActivity : AppCompatActivity() {
     private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
-    private lateinit var waypointList: MutableList<Feature>
     private lateinit var wayPointList: MutableList<Point>
+    private lateinit var waypointNames: MutableList<String>
     private var destinationReached: Boolean = false
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
@@ -253,9 +253,19 @@ class MapActivity : AppCompatActivity() {
             featureLocation.longitude = closestFeature.longitude()
             val value = enhancedLocation.distanceTo(featureLocation)
             if (value <= 50.0) {
+                var index = 0
+                var minIndex = 0
+                wayPointList.forEach {
+                    if (it.coordinates() == closestFeature.coordinates()) {
+                        minIndex = index
+                    }
+                    index += 1
+                }
+                val waypointName: String = waypointNames[minIndex]
                 waypointTitle.visibility = View.VISIBLE
+                waypointTitle.text = "Arrived at $waypointName"
                 waypointTitle.setOnClickListener {
-                    startARActivity()
+                    startARActivity(waypointName)
                     mapboxReplayer.stop()
                 }
             } else {
@@ -397,7 +407,8 @@ class MapActivity : AppCompatActivity() {
 
         val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
         points = JSONLine.coordinates()
-        waypointList = mutableListOf()
+        wayPointList = mutableListOf()
+        waypointNames = mutableListOf()
 
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))
@@ -432,13 +443,13 @@ class MapActivity : AppCompatActivity() {
                     circuit = matching.toDirectionRoute().toBuilder()
                         .routeIndex("0")
                         .build()
+                    var waypointList = mutableListOf<Feature>()
                     for (feature in data.features()!!) {
                         val waypoint = nearestPointOnLine(feature.geometry() as Point,(line.geometry() as LineString).coordinates())
                         waypointList.add(waypoint)
+                        wayPointList.add(waypoint.geometry() as Point)
+                        waypointNames.add(feature.getStringProperty("name"))
                     }
-                    waypointList.sortBy { element -> element.getNumberProperty("index").toInt() }
-                    wayPointList = mutableListOf()
-                    waypointList.forEach { feature -> wayPointList.add(feature.geometry() as Point) }
                     mapView.getMapboxMap().getStyle()!!.addSource(
                         geoJsonSource(POINT_SOURCE_ID) {
                             featureCollection(FeatureCollection.fromFeatures(waypointList))
@@ -765,8 +776,9 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    private fun startARActivity() {
+    private fun startARActivity(extras: String) {
         val intent = Intent(this, ARactivity::class.java)
+        intent.putExtra("id",extras)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }

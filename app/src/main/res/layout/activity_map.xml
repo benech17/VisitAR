@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".MainActivity">
 
     <com.mapbox.maps.MapView
@@ -29,12 +30,9 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/tripProgressCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="-12dp"
-        android:elevation="14dp"
-        android:visibility="gone"
         app:cardCornerRadius="10dp"
         app:cardUseCompatPadding="false"
         app:contentPaddingBottom="12dp"
@@ -42,56 +40,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <View
-            android:id="@+id/handle1"
-            style="@style/DropInStyleDragHandle"
-            android:layout_gravity="center|top" />
-
-        <com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView
-            android:id="@+id/tripProgressView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp">
+            android:layout_height="match_parent">
 
-        </com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView>
+            <TextView
+                android:id="@+id/waypointTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:background="@color/purple_500"
+                android:elegantTextHeight="true"
+                android:paddingStart="20dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="3dp"
+                android:text="@string/arrived_at_waypoint"
+                android:textAllCaps="true"
+                android:textColor="@color/mapboxWhite"
+                android:visibility="gone" />
 
-        <com.mapbox.navigation.dropin.view.MapboxExtendableButton
-            android:id="@+id/stop"
-            style="@style/DropInStyleExitButton"
-            android:layout_width="72dp"
-            android:layout_height="52dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="10dp" />
-    </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tripProgressCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/waypointTitle"
+                android:visibility="gone">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/switchActivityCard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="-12dp"
-        android:background="@color/mapbox_notification_blue"
-        android:elevation="15dp"
-        android:visibility="gone"
-        app:cardBackgroundColor="@android:color/holo_blue_dark"
-        app:cardCornerRadius="10dp"
-        app:cardUseCompatPadding="false"
-        app:contentPaddingBottom="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tripProgressCard">
+                <com.mapbox.navigation.ui.tripprogress.view.MapboxTripProgressView
+                    android:id="@+id/tripProgressView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Arrived at Waypoint"
-            android:textColor="@color/white" />
+                <com.mapbox.navigation.dropin.view.MapboxExtendableButton
+                    android:id="@+id/stop"
+                    style="@style/DropInStyleExitButton"
+                    android:layout_width="72dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="10dp" />
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
 
-        <View
-            android:id="@+id/handle2"
-            style="@style/DropInStyleDragHandle"
-            android:layout_gravity="center|top" />
 
     </androidx.cardview.widget.CardView>
 

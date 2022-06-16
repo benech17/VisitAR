@@ -8,6 +8,7 @@ package fr.yaniv.visitar
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -18,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -151,8 +153,8 @@ class MapActivity : AppCompatActivity() {
     private lateinit var routeOverview: MapboxRouteOverviewButton
     private lateinit var maneuverView: MapboxManeuverView
     private lateinit var tripProgressCard: CardView
-    private lateinit var switchActivityCard: CardView
     private lateinit var tripProgressView: MapboxTripProgressView
+    private lateinit var waypointTitle: TextView
     private lateinit var stop: MapboxExtendableButton
     private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
@@ -251,13 +253,13 @@ class MapActivity : AppCompatActivity() {
             featureLocation.longitude = closestFeature.longitude()
             val value = enhancedLocation.distanceTo(featureLocation)
             if (value <= 50.0) {
-                switchActivityCard.visibility = View.VISIBLE
-                tripProgressCard.setOnClickListener {
+                waypointTitle.visibility = View.VISIBLE
+                waypointTitle.setOnClickListener {
                     startARActivity()
                     mapboxReplayer.stop()
                 }
             } else {
-                switchActivityCard.visibility = View.GONE
+                findViewById<TextView>(R.id.waypointTitle).visibility = View.GONE
             }
 
             viewportDataSource.onLocationChanged(enhancedLocation)
@@ -379,8 +381,8 @@ class MapActivity : AppCompatActivity() {
         routeOverview = findViewById(R.id.routeOverview)
         maneuverView = findViewById(R.id.maneuverView)
         tripProgressCard = findViewById(R.id.tripProgressCard)
-        switchActivityCard = findViewById(R.id.switchActivityCard)
         tripProgressView = findViewById(R.id.tripProgressView)
+        waypointTitle = findViewById(R.id.waypointTitle)
         stop = findViewById(R.id.stop)
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)

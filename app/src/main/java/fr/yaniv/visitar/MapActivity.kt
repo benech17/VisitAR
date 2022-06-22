@@ -550,22 +550,16 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
-        val annotationApi = mapView.annotations
-        val pointAnnotationManager = annotationApi.createPointAnnotationManager(mapView)
-        pointAnnotationManager.addClickListener(object : OnPointAnnotationClickListener {
-            override fun onAnnotationClick(annotation: PointAnnotation): Boolean {
-                Toast.makeText(this@MapActivity, "Marker clicked", Toast.LENGTH_SHORT).show()
-                return true
-            }
-        })
+        val turf = TurfMeasurement.bbox(line)
 
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
-                Point.fromLngLat(
-                    2.344173, 48.856017
-                )
-            ).zoom(14.0).build()
+
+                Point.fromLngLat((turf[0]+turf[2])/2,(turf[1]+turf[3])/2)
+            ).zoom(13.0).build()
         )
+
+
 
         mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
             MapboxNavigationProvider.retrieve()

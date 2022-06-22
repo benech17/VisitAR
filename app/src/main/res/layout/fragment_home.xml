@@ -29,14 +29,19 @@
         android:layout_marginTop="80dp"
         android:layout_marginEnd="80dp"
         android:background="@color/black_transparent"
-        android:text="Bonjour, bienvenu à Notre dame de paris, le plus beau monument de Paris"
+        android:justificationMode="inter_word"
+        android:maxLines="15"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text="Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris"
         android:textAlignment="center"
-        android:textSize="20sp"
         android:textColor="@color/white"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:layout_width="fill_parent"

@@ -1,15 +1,17 @@
 package fr.yaniv.visitar.ui.home
 
+import android.R
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import fr.yaniv.visitar.databinding.FragmentHomeBinding
-import java.util.*
+
 
 class HomeFragment : Fragment() {
 
@@ -32,8 +34,6 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
-
-        //speak button click
         return root
     }
 
@@ -43,3 +43,5 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 }
+
+

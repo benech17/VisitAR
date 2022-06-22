@@ -14,6 +14,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.schedule
 
 /**
  * Le module gérant les fonctions de la caméra
@@ -43,25 +44,29 @@ class CameraModule(
         cameraPreview.addView(mPreview!!)
 
         cameraPreview!!.setOnTouchListener { view, event ->
-            if (event.getPointerCount() === 1) {
-                cameraFocus()
-                return@setOnTouchListener true
-            }
-            when (event.getAction() and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_POINTER_DOWN -> lastDistance = getFingersDistance(event)
-                MotionEvent.ACTION_MOVE -> {
-                    val newDistance: Float = getFingersDistance(event)
-                    if (newDistance > lastDistance) {
-                        // getFingerSpace()
-                        setZoom(true)
-                    } else if (newDistance < lastDistance) {
-                        // getFingerSpace()
-                        setZoom(false)
+            try {
+                if (event.getPointerCount() === 1) {
+                    cameraFocus()
+                    return@setOnTouchListener true
+                }
+                when (event.getAction() and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_POINTER_DOWN -> lastDistance = getFingersDistance(event)
+                    MotionEvent.ACTION_MOVE -> {
+                        val newDistance: Float = getFingersDistance(event)
+                        if (newDistance > lastDistance) {
+                            // getFingerSpace()
+                            setZoom(true)
+                        } else if (newDistance < lastDistance) {
+                            // getFingerSpace()
+                            setZoom(false)
+                        }
                     }
                 }
-            }
 
-            return@setOnTouchListener true
+                return@setOnTouchListener true
+            } catch(e: Exception) {
+                return@setOnTouchListener false
+            }
         }
 
         initImageCapture()
@@ -167,6 +172,10 @@ class CameraModule(
                 Log.d("Error", "File not found: ${e.message}")
             } catch (e: IOException) {
                 Log.d("Error", "Error accessing file: ${e.message}")
+            }
+
+            Timer("CameraResume", false).schedule(500) {
+                mPreview!!.startCameraPreview()
             }
         }
     }

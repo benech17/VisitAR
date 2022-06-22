@@ -55,6 +55,10 @@ import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.Plugin.*
 import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
@@ -152,15 +156,17 @@ class MapActivity : AppCompatActivity() {
     private lateinit var soundButton: MapboxSoundButton
     private lateinit var recenterButton: MapboxRecenterButton
     private lateinit var routeOverview: MapboxRouteOverviewButton
+    private lateinit var btnNav: Button
     private lateinit var maneuverView: MapboxManeuverView
     private lateinit var tripProgressCard: CardView
     private lateinit var tripProgressView: MapboxTripProgressView
     private lateinit var waypointTitle: TextView
     private lateinit var stop: MapboxExtendableButton
-    private lateinit var circuit: DirectionsRoute
     private lateinit var points: MutableList<Point>
     private lateinit var wayPointList: MutableList<Point>
     private lateinit var waypointNames: MutableList<String>
+    private lateinit var waypointID: MutableList<Int>
+    private var circuit: DirectionsRoute? = null
     private var destinationReached: Boolean = false
 
     private val pixelDensity = Resources.getSystem().displayMetrics.density
@@ -264,10 +270,11 @@ class MapActivity : AppCompatActivity() {
                     index += 1
                 }
                 val waypointName: String = waypointNames[minIndex]
+                val waypointID: Int = waypointID[minIndex]
                 waypointTitle.visibility = View.VISIBLE
-                waypointTitle.text = "Arrived at $waypointName"
+                waypointTitle.text = "$waypointName"
                 waypointTitle.setOnClickListener {
-                    startARActivity(waypointName)
+                    startARActivity(waypointID)
                     mapboxReplayer.stop()
                 }
             } else {
@@ -360,11 +367,13 @@ class MapActivity : AppCompatActivity() {
                     it.getLayer("linelayer")?.visibility(Visibility.NONE)
                 }
                 destinationReached = true
-                findViewById<Button>(R.id.btnNav).text = "Start Navigating"
-                setRouteAndStartNavigation(listOf(circuit))
-            } else {
+
+                findViewById<Button>(R.id.btnNav).text = "Localisation"
+                setRouteAndStartNavigation(listOf(circuit!!))
+            }
+            else {
                 //btnNav.text = "Move to Itinerary"
-                findViewById<Button>(R.id.btnNav).text = "Move to Itinerary"
+                findViewById<Button>(R.id.btnNav).text = "Navigation"
                 clearRouteAndStopNavigation()
                 destinationReached = false
             }
@@ -395,22 +404,21 @@ class MapActivity : AppCompatActivity() {
         tripProgressCard = findViewById(R.id.tripProgressCard)
         tripProgressView = findViewById(R.id.tripProgressView)
         waypointTitle = findViewById(R.id.waypointTitle)
+        btnNav = findViewById(R.id.btnNav)
         stop = findViewById(R.id.stop)
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
-        //mapView.getMapboxMap().loadStyle(styleExtension = style(Style.MAPBOX_STREETS){+image(RED_ICON_ID){ContextCompat.getDrawable(this@MapActivity,R.drawable.ic_red_marker)!!.getBitmap()}})
-        mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder().center(
-                Point.fromLngLat(
-                    2.344173, 48.856017
-                )
-            ).zoom(14.0).build()
-        )
+        mapView.getMapboxMap().loadStyle(styleExtension = style(Style.MAPBOX_STREETS){
+            +image(RED_ICON_ID) {
+                val marker = resources.getDrawable(R.drawable.ic_red_marker).getBitmap()
+                bitmap(marker)
+            }})
 
         val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
         points = JSONLine.coordinates()
         wayPointList = mutableListOf()
         waypointNames = mutableListOf()
+        waypointID = mutableListOf()
 
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))
@@ -426,11 +434,9 @@ class MapActivity : AppCompatActivity() {
             .build()
 
         mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
-            override fun onResponse(
-                call: Call<MapMatchingResponse>,
-                response: Response<MapMatchingResponse>
-            ) {
-                if (response.isSuccessful) {
+
+            override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
+                if (response.isSuccessful && response.body()!!.matchings()!!.size != 0) {
                     val matching = response.body()!!.matchings()!![0]
                     line = Feature.fromGeometry(
                         LineString.fromPolyline(
@@ -462,20 +468,104 @@ class MapActivity : AppCompatActivity() {
                         waypointList.add(waypoint)
                         wayPointList.add(waypoint.geometry() as Point)
                         waypointNames.add(feature.getStringProperty("name"))
+                        waypointID.add(feature.getNumberProperty("id").toInt())
                     }
                     mapView.getMapboxMap().getStyle()!!.addSource(
                         geoJsonSource(POINT_SOURCE_ID) {
                             featureCollection(FeatureCollection.fromFeatures(waypointList))
                         })
                     mapView.getMapboxMap().getStyle()!!.addLayer(
-                        circleLayer("pointLayer", POINT_SOURCE_ID) {
+                        symbolLayer("pointLayer", POINT_SOURCE_ID) {
+                            iconImage(RED_ICON_ID)
+                            iconAnchor(IconAnchor.BOTTOM)
+                            iconSize(0.5)
                         })
+                } else {
+                    mapView.getMapboxMap().getStyle()!!.addSource(
+                        geoJsonSource(LINE_SOURCE_ID) {
+                            feature(line)
+                        })
+                    mapView.getMapboxMap().getStyle()!!.addLayer(
+                        lineLayer("linelayer", LINE_SOURCE_ID) {
+                            lineCap(LineCap.ROUND)
+                            lineJoin(LineJoin.ROUND)
+                            lineOpacity(0.7)
+                            lineWidth(8.0)
+                            lineColor(ColorUtils.colorToRgbaString(Color.parseColor("#3bb2d0")))
+                        })
+                    mapView.getMapboxMap().getStyle()!!.addSource(
+                        geoJsonSource(POINT_SOURCE_ID) {
+                            featureCollection(data)
+                        })
+                    mapView.getMapboxMap().getStyle()!!.addLayer(
+                        symbolLayer("pointLayer", POINT_SOURCE_ID) {
+                            iconImage(RED_ICON_ID)
+                            iconAnchor(IconAnchor.BOTTOM)
+                            iconSize(0.5)
+                        })
+                    var waypointList = mutableListOf<Feature>()
+                    for (feature in data.features()!!) {
+                        val waypoint = nearestPointOnLine(
+                            feature.geometry() as Point,
+                            (line.geometry() as LineString).coordinates()
+                        )
+                        waypointList.add(waypoint)
+                        wayPointList.add(waypoint.geometry() as Point)
+                        waypointNames.add(feature.getStringProperty("name"))
+                        waypointID.add(feature.getNumberProperty("id").toInt())
+                    }
+                    Toast.makeText(this@MapActivity,"Itinéraire non Navigable",Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
+                mapView.getMapboxMap().getStyle()!!.addSource(
+                    geoJsonSource(LINE_SOURCE_ID) {
+                        feature(line)
+                    })
+                mapView.getMapboxMap().getStyle()!!.addLayer(
+                    lineLayer("linelayer", LINE_SOURCE_ID) {
+                        lineCap(LineCap.ROUND)
+                        lineJoin(LineJoin.ROUND)
+                        lineOpacity(0.7)
+                        lineWidth(8.0)
+                        lineColor(ColorUtils.colorToRgbaString(Color.parseColor("#3bb2d0")))
+                    })
+                mapView.getMapboxMap().getStyle()!!.addSource(
+                    geoJsonSource(POINT_SOURCE_ID) {
+                        featureCollection(data)
+                    })
+                mapView.getMapboxMap().getStyle()!!.addLayer(
+                    symbolLayer("pointLayer",POINT_SOURCE_ID) {
+                        iconImage(RED_ICON_ID)
+                        iconAnchor(IconAnchor.BOTTOM)
+                        iconSize(0.5)
+                    })
+                var waypointList = mutableListOf<Feature>()
+                for (feature in data.features()!!) {
+                    val waypoint = nearestPointOnLine(
+                        feature.geometry() as Point,
+                        (line.geometry() as LineString).coordinates()
+                    )
+                    waypointList.add(waypoint)
+                    wayPointList.add(waypoint.geometry() as Point)
+                    waypointNames.add(feature.getStringProperty("name"))
+                    waypointID.add(feature.getNumberProperty("id") as Int)
+                }
+                Toast.makeText(this@MapActivity,"Echec de l'Appel",Toast.LENGTH_SHORT).show()
             }
         })
+
+        val turf = TurfMeasurement.bbox(line)
+
+        mapView.getMapboxMap().setCamera(
+            CameraOptions.Builder().center(
+
+                Point.fromLngLat((turf[0]+turf[2])/2,(turf[1]+turf[3])/2)
+            ).zoom(13.0).build()
+        )
+
+
 
         mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
             MapboxNavigationProvider.retrieve()
@@ -493,9 +583,7 @@ class MapActivity : AppCompatActivity() {
         }
         mapboxNavigation.registerLocationObserver(locationObserver)
 
-        val btnNav = findViewById<Button>(R.id.btnNav)
         btnNav.setOnClickListener {
-
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -621,10 +709,16 @@ class MapActivity : AppCompatActivity() {
             }
             */
             if (!destinationReached) {
-                btnNav.text = "Move to Itinerary"
-                findRoute(points[0])
-            } else {
-                setRouteAndStartNavigation(listOf(circuit))
+                btnNav.text = "Navigation"
+                if (circuit == null) {
+                    btnNav.isEnabled = false
+                }
+                else {
+                    findRoute(points[0])
+                }
+            }
+            else {
+                setRouteAndStartNavigation(listOf(circuit!!))
             }
 
             //setRouteAndStartNavigation(listOf(circuit))
@@ -683,6 +777,7 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.setRoutes(routes)
         startSimulation(routes.first())
 
+        btnNav.visibility = View.GONE
         soundButton.visibility = View.VISIBLE
         routeOverview.visibility = View.VISIBLE
         tripProgressCard.visibility = View.VISIBLE
@@ -701,6 +796,7 @@ class MapActivity : AppCompatActivity() {
         maneuverView.visibility = View.GONE
         routeOverview.visibility = View.GONE
         tripProgressCard.visibility = View.GONE
+        btnNav.visibility = View.VISIBLE
     }
 
     private fun startSimulation(route: DirectionsRoute) {
@@ -792,7 +888,7 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    private fun startARActivity(extras: String) {
+    private fun startARActivity(extras: Int) {
         val intent = Intent(this, ARactivity::class.java)
         intent.putExtra("id", extras)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

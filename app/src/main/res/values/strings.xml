@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">visitar</string>
+
+    <string name="main_page_title">A decouvrir</string>
     <string name="title_activity_aractivity">ARactivity</string>
     <string name="title_home">Home</string>
     <string name="title_camera">Camera</string>
@@ -9,5 +11,14 @@
     <string name="title_notifications">Notifications</string>
     <string name="mapbox_access_token">pk.eyJ1IjoieHl0MTIzIiwiYSI6ImNsM2syaW5vZjAwbDQza204bWY0dGUyeWYifQ.GkR91ltuFuvZtBK7SO7pdQ</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="start_navigating">Start Navigating</string>
+    <string name="arrived_at_waypoint">Arrived at Waypoint</string>
+    <string name="derniers_parcours"> Nos derniers parcours </string>
+
+    <!-- Parcours customize -->
+    <string name="item_parcours_name">Nom du parcours</string>
+    <string name="item_parcours_description">description du parcours</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="start_navigating">Localisation</string>
 </resources>

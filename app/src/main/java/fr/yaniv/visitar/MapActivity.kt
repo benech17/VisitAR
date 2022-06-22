@@ -137,6 +137,7 @@ class MapActivity : AppCompatActivity() {
     private companion object {
         private const val BUTTON_ANIMATION_DURATION = 1500L
     }
+
     private lateinit var mapView: MapView
     private val navigationLocationProvider = NavigationLocationProvider()
     private lateinit var navigationCamera: NavigationCamera
@@ -253,7 +254,8 @@ class MapActivity : AppCompatActivity() {
                 keyPoints = locationMatcherResult.keyPoints,
             )
 
-            val closestFeature = TurfClassification.nearestPoint(enhancedLocation.toPoint(),wayPointList)
+            val closestFeature =
+                TurfClassification.nearestPoint(enhancedLocation.toPoint(), wayPointList)
             val featureLocation = Location("")
             featureLocation.latitude = closestFeature.latitude()
             featureLocation.longitude = closestFeature.longitude()
@@ -365,6 +367,7 @@ class MapActivity : AppCompatActivity() {
                     it.getLayer("linelayer")?.visibility(Visibility.NONE)
                 }
                 destinationReached = true
+
                 findViewById<Button>(R.id.btnNav).text = "Localisation"
                 setRouteAndStartNavigation(listOf(circuit!!))
             }
@@ -387,7 +390,8 @@ class MapActivity : AppCompatActivity() {
         val POINT_SOURCE_ID = "PointString"
         val RED_ICON_ID = "PointIcon"
         val resources = this.getResources()
-        val polygonFeatureJson = resources.openRawResource(R.raw.carte_projet_pmr).bufferedReader().use{ it.readText() }
+        val polygonFeatureJson =
+            resources.openRawResource(R.raw.carte_projet_pmr).bufferedReader().use { it.readText() }
         val data = FeatureCollection.fromJson(polygonFeatureJson)
         var line = data.features()!!.get(0)
         data.features()!!.removeAt(0)
@@ -419,7 +423,7 @@ class MapActivity : AppCompatActivity() {
         val mapboxMapMatchingRequest = MapboxMapMatching.builder()
             .accessToken(getString(R.string.mapbox_access_token))
             .coordinates(points)
-            .waypoints(0,points.size-1)
+            .waypoints(0, points.size - 1)
             .tidy(false)
             .steps(true)
             .voiceInstructions(true)
@@ -430,6 +434,7 @@ class MapActivity : AppCompatActivity() {
             .build()
 
         mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
+
             override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
                 if (response.isSuccessful && response.body()!!.matchings()!!.size != 0) {
                     val matching = response.body()!!.matchings()!![0]
@@ -512,6 +517,7 @@ class MapActivity : AppCompatActivity() {
                     Toast.makeText(this@MapActivity,"Itinéraire non Navigable",Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
                 mapView.getMapboxMap().getStyle()!!.addSource(
                     geoJsonSource(LINE_SOURCE_ID) {
@@ -567,7 +573,10 @@ class MapActivity : AppCompatActivity() {
             MapboxNavigationProvider.create(
                 NavigationOptions.Builder(this.applicationContext)
                     .accessToken(getString(R.string.mapbox_access_token))
-                    .distanceFormatterOptions(DistanceFormatterOptions.Builder(this).locale(FRENCH).unitType(UnitType.METRIC).build())
+                    .distanceFormatterOptions(
+                        DistanceFormatterOptions.Builder(this).locale(FRENCH)
+                            .unitType(UnitType.METRIC).build()
+                    )
                     .locationEngine(replayLocationEngine)
                     .build()
             )
@@ -620,7 +629,8 @@ class MapActivity : AppCompatActivity() {
                 viewportDataSource.followingPadding = followingPadding
             }
 
-            val distanceFormatterOptions = mapboxNavigation.navigationOptions.distanceFormatterOptions
+            val distanceFormatterOptions =
+                mapboxNavigation.navigationOptions.distanceFormatterOptions
 
             maneuverApi = MapboxManeuverApi(
                 MapboxDistanceFormatter(distanceFormatterOptions),
@@ -685,8 +695,8 @@ class MapActivity : AppCompatActivity() {
 
                 locationPuck = LocationPuck2D(
                     bearingImage = ContextCompat.getDrawable(
-                    this@MapActivity,
-                    R.drawable.ic_puck_location
+                        this@MapActivity,
+                        R.drawable.ic_puck_location
                     )
                 )
                 enabled = true
@@ -810,20 +820,19 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.registerArrivalObserver(arrivalObserver)
 
         if (mapboxNavigation.getRoutes().isEmpty()) {
-        // if simulation is enabled (ReplayLocationEngine set to NavigationOptions)
-        // but we're not simulating yet,
-        // push a single location sample to establish origin
+            // if simulation is enabled (ReplayLocationEngine set to NavigationOptions)
+            // but we're not simulating yet,
+            // push a single location sample to establish origin
             mapboxReplayer.pushEvents(
                 listOf(
                     ReplayRouteMapper.mapToUpdateLocation(
                         eventTimestamp = 0.0,
-                        point = Point.fromLngLat(2.3294,48.8595 )
+                        point = Point.fromLngLat(2.3294, 48.8595)
                     )
                 )
             )
             mapboxReplayer.playFirstLocation()
-        }
-        else {
+        } else {
             mapboxReplayer.play()
         }
     }
@@ -881,7 +890,7 @@ class MapActivity : AppCompatActivity() {
 
     private fun startARActivity(extras: Int) {
         val intent = Intent(this, ARactivity::class.java)
-        intent.putExtra("id",extras)
+        intent.putExtra("id", extras)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }

@@ -21,10 +21,10 @@ import fr.yaniv.visitar.ui.modules.CameraModule
 import java.util.*
 
 
-class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
+class ARactivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private var btnSpeak: Button? = null
-    private var btnNoSpeak: Button?= null
+    private var btnNoSpeak: Button? = null
     private var etSpeak: TextView? = null
     private var textDescription: TextView? = null
     var camera: CameraModule? = null
@@ -51,10 +51,10 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         tts = TextToSpeech(this, this)
 
         btnSpeak!!.setOnClickListener { speakOut() }
-        btnNoSpeak!!.setOnClickListener{
-            if(tts!!.isSpeaking){
+        btnNoSpeak!!.setOnClickListener {
+            if (tts!!.isSpeaking) {
                 tts!!.stop()
-            }else{
+            } else {
                 Toast.makeText(this, "Mode Vocale désactivé", Toast.LENGTH_SHORT).show()
             }
         }
@@ -66,7 +66,11 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_camera, R.id.navigation_notifications, R.id.navigation_information,R.id.navigation_histoire
+                R.id.navigation_home,
+                R.id.navigation_camera,
+                R.id.navigation_notifications,
+                R.id.navigation_information,
+                R.id.navigation_histoire
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -76,11 +80,17 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         // --- Partie Caméra ---
         // On commence par demander les permissions si ce n'est déjà fait
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_DENIED)
+            == PackageManager.PERMISSION_DENIED
+        )
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 100);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 100);
+            == PackageManager.PERMISSION_DENIED
+        )
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                100
+            );
         // Initialisation & Démarrage de la caméra
         val cameraPreviewLayout = findViewById<FrameLayout>(R.id.camera_preview)
         camera = CameraModule(this, cameraPreviewLayout)
@@ -93,15 +103,16 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
             val result = tts!!.setLanguage(Locale.FRENCH)
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS","The Language not supported!")
+                Log.e("TTS", "The Language not supported!")
             } else {
                 btnSpeak!!.isEnabled = true
             }
         }
     }
+
     private fun speakOut() {
         val text = etSpeak!!.text.toString()
-        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null,"")
+        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
 

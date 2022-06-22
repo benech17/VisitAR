@@ -4,25 +4,29 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.text.method.ScrollingMovementMethod
+import android.util.Log
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import fr.yaniv.visitar.databinding.ActivityAractivityBinding
-import java.util.*
-import android.util.Log
-import android.widget.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import fr.yaniv.visitar.ui.modules.CameraModule
+import java.util.*
+
 
 class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
     private var tts: TextToSpeech? = null
     private var btnSpeak: Button? = null
     private var btnNoSpeak: Button?= null
     private var etSpeak: TextView? = null
+    private var textDescription: TextView? = null
     var camera: CameraModule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +40,10 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         btnSpeak = findViewById(R.id.btn_speak)
         etSpeak = findViewById(R.id.description_home)
         btnNoSpeak = findViewById(R.id.btn_no_speak)
+        //textDescription = findViewById(R.id.description_home)
+        val textDescription = findViewById<View>(R.id.description_home) as TextView
+        textDescription.setMovementMethod(ScrollingMovementMethod());
+
 
         btnSpeak!!.isEnabled = false
 

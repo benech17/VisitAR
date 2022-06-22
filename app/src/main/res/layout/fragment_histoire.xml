@@ -21,28 +21,25 @@
             android:layout_width="match_parent"
             android:layout_height="400dp"
 
-            app:showTopShadow="false"
-            app:topShadowAlpha="0.6"
-            app:topShadowHeight="32dp"
-
-            app:showBottomShadow="false"
             app:bottomShadowAlpha="0.6"
             app:bottomShadowHeight="64dp"
-
-            app:showCaption="false"
-
-            app:showIndicator="true"
-            app:indicatorMargin="0dp"
-
-
             app:carouselBackground="#00000000"
-            app:imagePlaceholder="@drawable/ic_histoire"
 
             app:carouselPadding="0dp"
             app:carouselPaddingBottom="0dp"
             app:carouselPaddingEnd="0dp"
             app:carouselPaddingStart="0dp"
             app:carouselPaddingTop="0dp"
+
+            app:imagePlaceholder="@drawable/ic_histoire"
+            app:indicatorMargin="0dp"
+            app:showBottomShadow="false"
+
+            app:showCaption="false"
+            app:showIndicator="true"
+            app:showTopShadow="false"
+            app:topShadowAlpha="0.6"
+            app:topShadowHeight="32dp"
 
             />
     </RelativeLayout>

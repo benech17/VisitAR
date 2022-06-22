@@ -422,7 +422,7 @@ class MapActivity : AppCompatActivity() {
 
         mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
             override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body()!!.matchings()!!.size != 0) {
                     val matching = response.body()!!.matchings()!![0]
                     line = Feature.fromGeometry(LineString.fromPolyline(matching.geometry()!!, PRECISION_6))
                     mapView.getMapboxMap().getStyle()!!.addSource(
@@ -461,7 +461,7 @@ class MapActivity : AppCompatActivity() {
                 else {
                     mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
                         override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
-                            if (response.isSuccessful) {
+                            if (response.isSuccessful && response.body()!!.matchings()!!.size != 0) {
                                 val matching = response.body()!!.matchings()!![0]
                                 line = Feature.fromGeometry(LineString.fromPolyline(matching.geometry()!!, PRECISION_6))
                                 mapView.getMapboxMap().getStyle()!!.addSource(
@@ -528,6 +528,33 @@ class MapActivity : AppCompatActivity() {
                             }
                         }
                         override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
+                            mapView.getMapboxMap().getStyle()!!.addSource(
+                                geoJsonSource(LINE_SOURCE_ID) {
+                                    feature(line)
+                                })
+                            mapView.getMapboxMap().getStyle()!!.addLayer(
+                                lineLayer("linelayer", LINE_SOURCE_ID) {
+                                    lineCap(LineCap.ROUND)
+                                    lineJoin(LineJoin.ROUND)
+                                    lineOpacity(0.7)
+                                    lineWidth(8.0)
+                                    lineColor(ColorUtils.colorToRgbaString(Color.parseColor("#3bb2d0")))
+                                })
+                            mapView.getMapboxMap().getStyle()!!.addSource(
+                                geoJsonSource(POINT_SOURCE_ID) {
+                                    featureCollection(data)
+                                })
+                            mapView.getMapboxMap().getStyle()!!.addLayer(
+                                symbolLayer("pointLayer",POINT_SOURCE_ID) {
+                                    iconImage(RED_ICON_ID)
+                                    iconAnchor(IconAnchor.BOTTOM)
+                                    iconSize(0.5)
+                                })
+                            for (feature in data.features()!!) {
+                                wayPointList.add(feature.geometry() as Point)
+                                waypointNames.add(feature.getStringProperty("name"))
+                            }
+                            circuit = DirectionsRoute.builder().build()
                         }
                     })
                 }
@@ -685,7 +712,12 @@ class MapActivity : AppCompatActivity() {
             */
             if (!destinationReached) {
                 btnNav.text = "Move to Itinerary"
-                findRoute(points[0])
+                if (circuit.routeIndex() == null) {
+                    btnNav.isEnabled = false
+                }
+                else {
+                    findRoute(points[0])
+                }
             }
             else {
                 setRouteAndStartNavigation(listOf(circuit))

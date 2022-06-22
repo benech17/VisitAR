@@ -353,7 +353,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 1"
+        "name": "Pont Royal",
+        "id": 1
       },
       "geometry": {
         "type": "Point",
@@ -366,7 +367,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 10"
+        "name": "Opéra Garnier",
+        "id": 10
       },
       "geometry": {
         "type": "Point",
@@ -379,7 +381,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 11"
+        "name": "Eglise de la Madeleine",
+        "id": 11
       },
       "geometry": {
         "type": "Point",
@@ -392,7 +395,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 12"
+        "name": "Palais de l'Elysée",
+        "id": 12
       },
       "geometry": {
         "type": "Point",
@@ -405,7 +409,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 13"
+        "name": "Grand Palais",
+        "id": 13
       },
       "geometry": {
         "type": "Point",
@@ -418,7 +423,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 14"
+        "name": "Hôtel des Invalides",
+        "id": 14
       },
       "geometry": {
         "type": "Point",
@@ -431,7 +437,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 15"
+        "name": "Place de la Concorde",
+        "id": 15
       },
       "geometry": {
         "type": "Point",
@@ -444,7 +451,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 2"
+        "name": "Palais du Louvre",
+        "id": 2
       },
       "geometry": {
         "type": "Point",
@@ -457,7 +465,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 3"
+        "name": "Eglise Saint-Germain-l'Auxerrois",
+        "id": 3
       },
       "geometry": {
         "type": "Point",
@@ -470,7 +479,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 4"
+        "name": "Halles",
+        "id": 4
       },
       "geometry": {
         "type": "Point",
@@ -483,7 +493,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 5"
+        "name": "Eglise Saint-Eustache",
+        "id": 5
       },
       "geometry": {
         "type": "Point",
@@ -496,7 +507,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 6"
+        "name": "Place des Victoires",
+        "id": 6
       },
       "geometry": {
         "type": "Point",
@@ -509,7 +521,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 7"
+        "name": "Palais Royal",
+        "id": 7
       },
       "geometry": {
         "type": "Point",
@@ -522,7 +535,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 8"
+        "name": "Eglise Saint Roch",
+        "id": 8
       },
       "geometry": {
         "type": "Point",
@@ -535,7 +549,8 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "Photo 9"
+        "name": "Place Vendôme",
+        "id": 9
       },
       "geometry": {
         "type": "Point",

@@ -459,11 +459,6 @@ class MapActivity : AppCompatActivity() {
                             featureCollection(FeatureCollection.fromFeatures(waypointList))
                         })
                     mapView.getMapboxMap().getStyle()!!.addLayer(
-                        /*
-                        circleLayer("pointLayer", POINT_SOURCE_ID) {
-                        })
-
-                         */
                         symbolLayer("pointLayer",POINT_SOURCE_ID) {
                             iconImage(RED_ICON_ID)
                             iconAnchor(IconAnchor.BOTTOM)
@@ -532,6 +527,10 @@ class MapActivity : AppCompatActivity() {
                                         iconAnchor(IconAnchor.BOTTOM)
                                         iconSize(0.5)
                                     })
+                                for (feature in data.features()!!) {
+                                    wayPointList.add(feature.geometry() as Point)
+                                    waypointNames.add(feature.getStringProperty("name"))
+                                }
                                 circuit = DirectionsRoute.builder().build()
                             }
                         }

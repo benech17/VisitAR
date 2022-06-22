@@ -22,6 +22,10 @@ class CameraPreview(
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
+        startCameraPreview()
+    }
+
+    fun startCameraPreview() {
         // The Surface has been created, now tell the camera where to draw the preview.
         mCamera.apply {
             try {

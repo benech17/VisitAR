@@ -396,7 +396,11 @@ class MapActivity : AppCompatActivity() {
         stop = findViewById(R.id.stop)
 
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS)
-        //mapView.getMapboxMap().loadStyle(styleExtension = style(Style.MAPBOX_STREETS){+image(RED_ICON_ID){ContextCompat.getDrawable(this@MapActivity,R.drawable.ic_red_marker)!!.getBitmap()}})
+        mapView.getMapboxMap().loadStyle(styleExtension = style(Style.MAPBOX_STREETS){
+            +image(RED_ICON_ID) {
+                val marker = resources.getDrawable(R.drawable.ic_red_marker).getBitmap()
+                bitmap(marker)
+        }})
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
                 Point.fromLngLat(
@@ -455,8 +459,61 @@ class MapActivity : AppCompatActivity() {
                             featureCollection(FeatureCollection.fromFeatures(waypointList))
                         })
                     mapView.getMapboxMap().getStyle()!!.addLayer(
+                        /*
                         circleLayer("pointLayer", POINT_SOURCE_ID) {
                         })
+
+                         */
+                        symbolLayer("pointLayer",POINT_SOURCE_ID) {
+                            iconImage(RED_ICON_ID)
+                            iconAnchor(IconAnchor.BOTTOM)
+                            iconSize(0.5)
+                        })
+                }
+                else {
+                    mapboxMapMatchingRequest.enqueueCall(object : Callback<MapMatchingResponse> {
+                        override fun onResponse(call: Call<MapMatchingResponse>, response: Response<MapMatchingResponse>) {
+                            if (response.isSuccessful) {
+                                val matching = response.body()!!.matchings()!![0]
+                                line = Feature.fromGeometry(LineString.fromPolyline(matching.geometry()!!, PRECISION_6))
+                                mapView.getMapboxMap().getStyle()!!.addSource(
+                                    geoJsonSource(LINE_SOURCE_ID) {
+                                        feature(line)
+                                    })
+                                mapView.getMapboxMap().getStyle()!!.addLayer(
+                                    lineLayer("linelayer", LINE_SOURCE_ID) {
+                                        lineCap(LineCap.ROUND)
+                                        lineJoin(LineJoin.ROUND)
+                                        lineOpacity(0.7)
+                                        lineWidth(8.0)
+                                        lineColor(ColorUtils.colorToRgbaString(Color.parseColor("#3bb2d0")))
+                                    })
+                                circuit = matching.toDirectionRoute().toBuilder()
+                                    .routeIndex("0")
+                                    .build()
+                                var waypointList = mutableListOf<Feature>()
+                                for (feature in data.features()!!) {
+                                    val waypoint = nearestPointOnLine(feature.geometry() as Point,(line.geometry() as LineString).coordinates())
+                                    waypointList.add(waypoint)
+                                    wayPointList.add(waypoint.geometry() as Point)
+                                    waypointNames.add(feature.getStringProperty("name"))
+                                }
+                                mapView.getMapboxMap().getStyle()!!.addSource(
+                                    geoJsonSource(POINT_SOURCE_ID) {
+                                        featureCollection(FeatureCollection.fromFeatures(waypointList))
+                                    })
+                                mapView.getMapboxMap().getStyle()!!.addLayer(
+                                    symbolLayer("pointLayer",POINT_SOURCE_ID) {
+                                        iconImage(RED_ICON_ID)
+                                        iconAnchor(IconAnchor.BOTTOM)
+                                        iconSize(0.5)
+                                    })
+                            }
+
+                        }
+                        override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
+                        }
+                    })
                 }
             }
             override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {

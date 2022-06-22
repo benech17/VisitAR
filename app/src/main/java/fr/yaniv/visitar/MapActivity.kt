@@ -400,14 +400,7 @@ class MapActivity : AppCompatActivity() {
             +image(RED_ICON_ID) {
                 val marker = resources.getDrawable(R.drawable.ic_red_marker).getBitmap()
                 bitmap(marker)
-        }})
-        mapView.getMapboxMap().setCamera(
-            CameraOptions.Builder().center(
-                Point.fromLngLat(
-                    2.344173, 48.856017
-                )
-            ).zoom(14.0).build()
-        )
+            }})
 
         val JSONLine = Objects.requireNonNull(line.geometry()) as LineString
         points = JSONLine.coordinates()
@@ -542,6 +535,14 @@ class MapActivity : AppCompatActivity() {
             override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
             }
         })
+
+        mapView.getMapboxMap().setCamera(
+            CameraOptions.Builder().center(
+                Point.fromLngLat(
+                    2.344173, 48.856017
+                )
+            ).zoom(14.0).build()
+        )
 
         mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
             MapboxNavigationProvider.retrieve()

@@ -563,13 +563,16 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
+        val turf = TurfMeasurement.bbox(line)
+
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
-                Point.fromLngLat(
-                    2.344173, 48.856017
-                )
-            ).zoom(14.0).build()
+
+                Point.fromLngLat((turf[0]+turf[2])/2,(turf[1]+turf[3])/2)
+            ).zoom(13.0).build()
         )
+
+
 
         mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
             MapboxNavigationProvider.retrieve()

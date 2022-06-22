@@ -12,8 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/carousel_shape"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="80dp"
-        >
+        android:layout_marginTop="80dp">
 
 
         <org.imaginativeworld.whynotimagecarousel.ImageCarousel

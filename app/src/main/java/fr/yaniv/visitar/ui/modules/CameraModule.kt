@@ -20,7 +20,8 @@ import java.util.*
  */
 class CameraModule(
     private val context: Context,
-    private val cameraPreview: FrameLayout) {
+    private val cameraPreview: FrameLayout
+) {
 
     val MEDIA_TYPE_IMAGE = 1
     val MEDIA_TYPE_VIDEO = 2

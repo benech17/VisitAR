@@ -11,6 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+
 import org.imaginativeworld.whynotimagecarousel.R
 import fr.yaniv.visitar.databinding.CarouselLayout1Binding
 import fr.yaniv.visitar.databinding.FragmentHistoireBinding
@@ -89,9 +90,9 @@ class HistoireFragment : Fragment() {
         val list = mutableListOf<CarouselItem>()
         list.add(
             CarouselItem(
-                imageUrl = "https://images.unsplash.com/photo-1532581291347-9c39cf10a73c?w=1080",
+                imageUrl = "@drawable/ndp1650.jpg",
                 caption = "Description description description description description description description description description description description description description description description ",
-                headers = mapOf("date" to "1999")
+                headers = mapOf("date" to "1650")
             )
         )
         list.add(

@@ -55,6 +55,10 @@ import com.mapbox.maps.extension.style.utils.ColorUtils
 import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.Plugin.*
 import com.mapbox.maps.plugin.animation.camera
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.navigation.base.ExperimentalPreviewMapboxNavigationAPI
@@ -546,6 +550,15 @@ class MapActivity : AppCompatActivity() {
             }
         })
 
+        val annotationApi = mapView.annotations
+        val pointAnnotationManager = annotationApi.createPointAnnotationManager(mapView)
+        pointAnnotationManager.addClickListener(object : OnPointAnnotationClickListener {
+            override fun onAnnotationClick(annotation: PointAnnotation): Boolean {
+                Toast.makeText(this@MapActivity, "Marker clicked", Toast.LENGTH_SHORT).show()
+                return true
+            }
+        })
+
         mapView.getMapboxMap().setCamera(
             CameraOptions.Builder().center(
                 Point.fromLngLat(
@@ -568,7 +581,6 @@ class MapActivity : AppCompatActivity() {
         mapboxNavigation.registerLocationObserver(locationObserver)
 
         btnNav.setOnClickListener {
-
             if (ActivityCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION

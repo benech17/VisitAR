@@ -28,9 +28,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
         android:layout_marginEnd="80dp"
+        android:background="@color/black_transparent"
         android:text="Bonjour, bienvenu à Notre dame de paris, le plus beau monument de Paris"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,25 +42,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
-
-        <Button
-            android:id="@+id/btn_no_speak"
-            style="@style/Base.CardView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:drawableLeft="@drawable/ic_volume_off"
-            android:text="Stop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+        android:paddingHorizontal="16dp">
 
         <Button
             android:id="@+id/btn_speak"
@@ -72,6 +59,21 @@
             android:layout_marginBottom="10dp"
             android:drawableLeft="@drawable/ic_volume_up"
             android:text="Speak"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_no_speak"
+            style="@style/Base.CardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:drawableLeft="@drawable/ic_volume_off"
+            android:text="Stop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

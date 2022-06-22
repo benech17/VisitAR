@@ -509,7 +509,31 @@ class MapActivity : AppCompatActivity() {
                                         iconSize(0.5)
                                     })
                             }
-
+                            else {
+                                mapView.getMapboxMap().getStyle()!!.addSource(
+                                    geoJsonSource(LINE_SOURCE_ID) {
+                                        feature(line)
+                                    })
+                                mapView.getMapboxMap().getStyle()!!.addLayer(
+                                    lineLayer("linelayer", LINE_SOURCE_ID) {
+                                        lineCap(LineCap.ROUND)
+                                        lineJoin(LineJoin.ROUND)
+                                        lineOpacity(0.7)
+                                        lineWidth(8.0)
+                                        lineColor(ColorUtils.colorToRgbaString(Color.parseColor("#3bb2d0")))
+                                    })
+                                mapView.getMapboxMap().getStyle()!!.addSource(
+                                    geoJsonSource(POINT_SOURCE_ID) {
+                                        featureCollection(data)
+                                    })
+                                mapView.getMapboxMap().getStyle()!!.addLayer(
+                                    symbolLayer("pointLayer",POINT_SOURCE_ID) {
+                                        iconImage(RED_ICON_ID)
+                                        iconAnchor(IconAnchor.BOTTOM)
+                                        iconSize(0.5)
+                                    })
+                                circuit = DirectionsRoute.builder().build()
+                            }
                         }
                         override fun onFailure(call: Call<MapMatchingResponse>, throwable: Throwable) {
                         }

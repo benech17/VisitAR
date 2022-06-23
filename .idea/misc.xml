@@ -21,8 +21,9 @@
         <entry key="app/src/main/res/drawable/ic_unstar.xml" value="0.149" />
         <entry key="app/src/main/res/drawable/ic_volume_off.xml" value="0.198" />
         <entry key="app/src/main/res/drawable/parcours_1.xml" value="0.149" />
+        <entry key="app/src/main/res/drawable/parcours_1.xml_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_aractivity.xml" value="0.27138208459924773" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.332098388671875" />
         <entry key="app/src/main/res/layout/activity_map.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/carousel_layout_1.xml" value="0.2212921142578125" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.2101851851851852" />
@@ -34,9 +35,12 @@
         <entry key="app/src/main/res/layout/fragment_main2.xml" value="0.13333333333333333" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.1294438680013021" />
         <entry key="app/src/main/res/layout/item_horizontal_parcours.xml" value="0.19427083333333334" />
-        <entry key="app/src/main/res/layout/item_vertical_parcours.xml" value="0.31606038411458337" />
+        <entry key="app/src/main/res/layout/item_vertical_parcours.xml" value="0.45610351562500007" />
         <entry key="app/src/main/res/layout/my_speed_limit_layout.xml" value="0.21106414794921877" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.2101851851851852" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/parcours_1.xml.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/parcours_1.xml_round.xml" value="0.1" />
       </map>
     </option>
   </component>

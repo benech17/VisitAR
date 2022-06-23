@@ -30,6 +30,12 @@ class MainActivity : AppCompatActivity() {
             switchActivityIntent.putExtra("path","$backupDBPath/$itinerary")
             startActivity(switchActivityIntent)
         }
+
+        //injecter le fragment dans notre boite
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, MainFragment(this))
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun dirChecker(dir: String) {

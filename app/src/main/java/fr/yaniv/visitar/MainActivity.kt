@@ -1,11 +1,13 @@
 package fr.yaniv.visitar
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.widget.Button
-import fr.yaniv.visitar.fragments.MainFragment
-import fr.yaniv.visitar.ui.home.HomeFragment
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,15 +16,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val mapButton = findViewById<Button>(R.id.buttonMap)
-        mapButton.setOnClickListener {
-            val switchActivityIntent = Intent(this, MapActivity::class.java)
-            startActivity(switchActivityIntent)
+        val itinerary = "itinerary_1"
+
+        val backupDBPath = this.filesDir.path + "/VisitAR-db-backup"
+        dirChecker(backupDBPath)
+
+        if (!File("$backupDBPath/$itinerary/carte_projet_pmr.geojson").exists()) {
+            mapButton.isEnabled = false
         }
 
-        //injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, MainFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
+        mapButton.setOnClickListener {
+            val switchActivityIntent = Intent(this, MapActivity::class.java)
+            switchActivityIntent.putExtra("path","$backupDBPath/$itinerary")
+            startActivity(switchActivityIntent)
+        }
+    }
+
+    private fun dirChecker(dir: String) {
+        val f = File(dir)
+        if (!f.isDirectory) {
+            f.mkdirs()
+        }
     }
 }

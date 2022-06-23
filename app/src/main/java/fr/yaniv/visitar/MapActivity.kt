@@ -127,6 +127,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.util.*
 import java.util.Locale.FRENCH
 
@@ -166,6 +167,7 @@ class MapActivity : AppCompatActivity() {
     private lateinit var wayPointList: MutableList<Point>
     private lateinit var waypointNames: MutableList<String>
     private lateinit var waypointID: MutableList<Int>
+    private lateinit var path: String
     private var circuit: DirectionsRoute? = null
     private var destinationReached: Boolean = false
 
@@ -272,7 +274,7 @@ class MapActivity : AppCompatActivity() {
                 val waypointName: String = waypointNames[minIndex]
                 val waypointID: Int = waypointID[minIndex]
                 waypointTitle.visibility = View.VISIBLE
-                waypointTitle.text = "$waypointName"
+                waypointTitle.text = waypointName
                 waypointTitle.setOnClickListener {
                     startARActivity(waypointID)
                     mapboxReplayer.stop()
@@ -384,14 +386,14 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+        path = intent.extras?.getString("path")!!
 
         destinationReached = false
         val LINE_SOURCE_ID = "LineString"
         val POINT_SOURCE_ID = "PointString"
         val RED_ICON_ID = "PointIcon"
-        val resources = this.getResources()
-        val polygonFeatureJson =
-            resources.openRawResource(R.raw.carte_projet_pmr).bufferedReader().use { it.readText() }
+        val file = File("$path/carte_projet_pmr.geojson")
+        val polygonFeatureJson = file.bufferedReader().use{ it.readText() }
         val data = FeatureCollection.fromJson(polygonFeatureJson)
         var line = data.features()!!.get(0)
         data.features()!!.removeAt(0)
@@ -890,7 +892,8 @@ class MapActivity : AppCompatActivity() {
 
     private fun startARActivity(extras: Int) {
         val intent = Intent(this, ARactivity::class.java)
-        intent.putExtra("id", extras)
+        intent.putExtra("id",extras)
+        intent.putExtra("path",path)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }

@@ -16,12 +16,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import fr.yaniv.visitar.data.WaypointData
 import fr.yaniv.visitar.databinding.ActivityAractivityBinding
 import fr.yaniv.visitar.ui.modules.CameraModule
+import java.io.File
 import java.util.*
 
 
-class ARactivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
+    private lateinit var path: String
+    private var pointID: Int = 0
     private var tts: TextToSpeech? = null
     private var btnSpeak: Button? = null
     private var btnNoSpeak: Button? = null
@@ -35,6 +40,13 @@ class ARactivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding = ActivityAractivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //setContentView(R.layout.activity_main)
+
+        path = intent.extras?.getString("path")!!
+        pointID = intent.extras?.getInt("id")!!
+        val gson = Gson()
+        val file = File("$path/waypoint_$pointID")
+        val fileText = file.bufferedReader().use{ it.readText() }
+        val waypoint = gson.fromJson(fileText,WaypointData::class.java)
 
         // view binding button and edit text
         btnSpeak = findViewById(R.id.btn_speak)

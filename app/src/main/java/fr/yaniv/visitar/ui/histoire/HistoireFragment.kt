@@ -104,7 +104,7 @@ class HistoireFragment : Fragment() {
              */
             list.add(
                 CarouselItem(
-                    imageUrl = it.photo,
+                    imageUrl = "https://www.worldofsecrets.net/pmr/" + it.photo + ".jpg",
                     caption =  it.description,
                     headers = mapOf("date" to it.date)
                 )

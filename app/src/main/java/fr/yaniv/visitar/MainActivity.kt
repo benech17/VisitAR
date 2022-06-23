@@ -1,14 +1,14 @@
 package fr.yaniv.visitar
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import fr.yaniv.visitar.fragments.MainFragment
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val mapButton = findViewById<Button>(R.id.buttonMap)
-        val itinerary = "itinerary_1"
 
+        val itinerary = "itinerary_1"
         val backupDBPath = this.filesDir.path + "/VisitAR-db-backup"
         dirChecker(backupDBPath)
 

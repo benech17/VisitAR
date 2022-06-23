@@ -25,7 +25,8 @@ import java.util.*
 
 
 class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
-    private lateinit var path: String
+    lateinit var path: String
+    lateinit var waypoint: WaypointData
     private var pointID: Int = 0
     private var tts: TextToSpeech? = null
     private var btnSpeak: Button? = null
@@ -44,9 +45,9 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
         path = intent.extras?.getString("path")!!
         pointID = intent.extras?.getInt("id")!!
         val gson = Gson()
-        val file = File("$path/waypoint_$pointID")
+        val file = File("$path/waypoint_$pointID.json")
         val fileText = file.bufferedReader().use{ it.readText() }
-        val waypoint = gson.fromJson(fileText,WaypointData::class.java)
+        waypoint = gson.fromJson(fileText,WaypointData::class.java)
 
         // view binding button and edit text
         btnSpeak = findViewById(R.id.btn_speak)

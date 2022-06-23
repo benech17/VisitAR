@@ -1,16 +1,22 @@
 package fr.yaniv.visitar.ui.histoire
 
 import android.graphics.Color.red
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import com.mapbox.maps.extension.style.sources.generated.imageSource
+import fr.yaniv.visitar.ARactivity
+import fr.yaniv.visitar.data.Photo
 
 import org.imaginativeworld.whynotimagecarousel.R
 import fr.yaniv.visitar.databinding.CarouselLayout1Binding
@@ -19,6 +25,7 @@ import org.imaginativeworld.whynotimagecarousel.ImageCarousel
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import org.imaginativeworld.whynotimagecarousel.utils.setImage
+import java.io.File
 import kotlin.random.Random
 
 class HistoireFragment : Fragment() {
@@ -85,23 +92,24 @@ class HistoireFragment : Fragment() {
     }
 
     fun getPlaceHistoireData(): List<CarouselItem> {
-
-        //ICI - Récupérer les données d'histoire
         val list = mutableListOf<CarouselItem>()
-        list.add(
-            CarouselItem(
-                imageUrl = "@drawable/ndp1650.jpg",
-                caption = "Description description description description description description description description description description description description description description description ",
-                headers = mapOf("date" to "1650")
+        val arActivity = activity as ARactivity
+        arActivity.waypoint.photos.forEach{
+            /*
+            var f = File(arActivity.path + "/" + it.photo + ".jpg")
+
+            var u = Uri.fromFile(f)
+            Toast.makeText(arActivity, u.path,Toast.LENGTH_LONG).show()
+
+             */
+            list.add(
+                CarouselItem(
+                    imageUrl = it.photo,
+                    caption =  it.description,
+                    headers = mapOf("date" to it.date)
+                )
             )
-        )
-        list.add(
-            CarouselItem(
-                imageUrl = "https://images.unsplash.com/photo-1618346136472-090de27fe8b4?w=1080",
-                caption = "Description description description description description description description description description description description description description description description ",
-                headers = mapOf("date" to "1999")
-            )
-        )
+        }
 
         return list;
 

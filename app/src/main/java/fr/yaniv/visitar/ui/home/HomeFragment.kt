@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import fr.yaniv.visitar.ARactivity
 import fr.yaniv.visitar.databinding.FragmentHomeBinding
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 
 class HomeFragment : Fragment() {
@@ -29,12 +31,10 @@ class HomeFragment : Fragment() {
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 

@@ -33,7 +33,7 @@
         android:maxLines="15"
         android:scrollbars="vertical"
         android:singleLine="false"
-        android:text="Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris Bienvenue à Paris"
+        android:text=""
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="20sp"

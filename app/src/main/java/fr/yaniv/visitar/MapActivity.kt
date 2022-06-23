@@ -566,9 +566,7 @@ class MapActivity : AppCompatActivity() {
                 Point.fromLngLat((turf[0]+turf[2])/2,(turf[1]+turf[3])/2)
             ).zoom(13.0).build()
         )
-
-
-
+        
         mapboxNavigation = if (MapboxNavigationProvider.isCreated()) {
             MapboxNavigationProvider.retrieve()
         } else {

@@ -13,7 +13,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="arrived_at_waypoint">Arrived at Waypoint</string>
     <string name="derniers_parcours"> Nos derniers parcours </string>
-
+    <string name="start_navigating">Localisation</string>
     <!-- Parcours customize -->
     <string name="item_parcours_name">Nom du parcours</string>
     <string name="item_parcours_description">description du parcours</string>

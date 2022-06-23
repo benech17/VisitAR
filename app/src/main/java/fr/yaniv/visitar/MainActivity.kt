@@ -7,6 +7,7 @@ import android.os.Environment
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import fr.yaniv.visitar.fragments.MainFragment
 import java.io.File
 
 class MainActivity : AppCompatActivity() {

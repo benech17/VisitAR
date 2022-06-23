@@ -23,20 +23,15 @@ class MainActivity : AppCompatActivity() {
         dirChecker(backupDBPath)
 
         if (!File("$backupDBPath/$itinerary/carte_projet_pmr.geojson").exists()) {
-            mapButton.isEnabled = false
-        }
+        } else {
+            val path = "$backupDBPath/$itinerary"
 
-        mapButton.setOnClickListener {
-            val switchActivityIntent = Intent(this, MapActivity::class.java)
-            switchActivityIntent.putExtra("path","$backupDBPath/$itinerary")
-            startActivity(switchActivityIntent)
+            //injecter le fragment dans notre boite
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, MainFragment(this,path))
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
-
-        //injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, MainFragment(this))
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     private fun dirChecker(dir: String) {

@@ -25,10 +25,9 @@
             <ImageView
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"
-                android:layout_height="225dp"
-                android:paddingHorizontal="-20dp"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
         </com.google.android.material.card.MaterialCardView>

@@ -12,15 +12,12 @@ import fr.yaniv.visitar.R
 import fr.yaniv.visitar.adapter.ParcoursAdapter
 import fr.yaniv.visitar.adapter.ParcoursItemDecoration
 
-class MainFragment(private val context: MainActivity) : Fragment() {
+class MainFragment(private val context: MainActivity,private val path: String) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
         val view = inflater?.inflate(R.layout.fragment_main, container, false)
         //créer une liste qui va stocker ces plantes
         val parcourslist = arrayListOf<ParcoursModel>()
@@ -64,12 +61,12 @@ class MainFragment(private val context: MainActivity) : Fragment() {
             val horizontalRecyclerView = view . findViewById < RecyclerView >(R.id.horizontal_recycler_view)
 
         horizontalRecyclerView.adapter =
-            ParcoursAdapter(context,parcourslist, R.layout.item_horizontal_parcours)
+            ParcoursAdapter(context,parcourslist, R.layout.item_horizontal_parcours,path)
 
         // recuperer le second recycler view
         val verticalRecyclerView = view.findViewById<RecyclerView>(R.id.vertical_recycler_view)
         verticalRecyclerView.adapter =
-            ParcoursAdapter(context,parcourslist, R.layout.item_vertical_parcours)
+            ParcoursAdapter(context,parcourslist, R.layout.item_vertical_parcours,path)
         verticalRecyclerView.addItemDecoration(ParcoursItemDecoration())
         return view
     }

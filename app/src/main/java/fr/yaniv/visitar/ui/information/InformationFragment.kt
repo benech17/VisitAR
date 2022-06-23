@@ -33,7 +33,6 @@ class InformationFragment : Fragment() {
         val root: View = binding.root
 
         var arActivity = activity as ARactivity;
-        _binding!!.textInformations.text = arActivity.waypoint.description;
         _binding!!.textInformationsHoraire.text = arActivity.waypoint.horaires;
         _binding!!.textInformationsAffluence.text = arActivity.waypoint.affluence;
         _binding!!.textInformationsTarif.text = arActivity.waypoint.tarif;

@@ -38,16 +38,16 @@ class ARactivity : AppCompatActivity(),TextToSpeech.OnInitListener {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        binding = ActivityAractivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        //setContentView(R.layout.activity_main)
-
         path = intent.extras?.getString("path")!!
         pointID = intent.extras?.getInt("id")!!
         val gson = Gson()
         val file = File("$path/waypoint_$pointID.json")
         val fileText = file.bufferedReader().use{ it.readText() }
         waypoint = gson.fromJson(fileText,WaypointData::class.java)
+
+        binding = ActivityAractivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //setContentView(R.layout.activity_main)
 
         // view binding button and edit text
         btnSpeak = findViewById(R.id.btn_speak)

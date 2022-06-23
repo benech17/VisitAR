@@ -32,10 +32,8 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        /*
         var arActivity = activity as ARactivity;
         _binding!!.descriptionHome.text = arActivity.waypoint.description;
-         */
         return root
     }
 

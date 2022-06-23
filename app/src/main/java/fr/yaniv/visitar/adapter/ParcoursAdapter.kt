@@ -11,16 +11,15 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import fr.yaniv.visitar.MainActivity
-import fr.yaniv.visitar.MapActivity
-import fr.yaniv.visitar.ParcoursModel
-import fr.yaniv.visitar.R
+import fr.yaniv.visitar.*
 
 class ParcoursAdapter(
     private val context: MainActivity,
     private val parcoursList: List<ParcoursModel>,
-    private val layoutId: Int
+    private val layoutId: Int,
+    private val path: String
 ) : RecyclerView.Adapter<ParcoursAdapter.ViewHolder>() {
+    val mapActivity = context
 
     // boite pour ranger tous les composants à controler
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -54,9 +53,9 @@ class ParcoursAdapter(
 
 
         holder.parcoursImage.setOnClickListener {
-                val switchActivityIntent = Intent(context, MapActivity::class.java)
+            val switchActivityIntent = Intent(context, MapActivity::class.java)
+            switchActivityIntent.putExtra("path",path)
             context.startActivity(switchActivityIntent)
-
         }
     }
 

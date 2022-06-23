@@ -19,8 +19,9 @@ class MainFragment(private val context: MainActivity) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater?.inflate(R.layout.fragment_main, container, false)
 
+
+        val view = inflater?.inflate(R.layout.fragment_main, container, false)
         //créer une liste qui va stocker ces plantes
         val parcourslist = arrayListOf<ParcoursModel>()
         //enregistrer une premiere plante dans notre liste (pissenlit)
@@ -44,8 +45,8 @@ class MainFragment(private val context: MainActivity) : Fragment() {
         parcourslist.add(
                     ParcoursModel(
                         "Sydney et les kangourous",
-                        "Opéra - Kangourou",
-                        "58 min",
+                        "Opéra - Kangourou - Bridge",
+                        "1h 08 min",
                         "7.2 Km",
                         "https://cdn.pixabay.com/photo/2018/05/07/22/08/opera-house-3381786_1280.jpg"
                     ))
@@ -53,7 +54,7 @@ class MainFragment(private val context: MainActivity) : Fragment() {
         parcourslist.add(
                     ParcoursModel(
                         "New York",
-                        "Manhattan - Brooklyn",
+                        "Manhattan - Times Square ",
                         "2h 27 min",
                         "8.2 Km",
                         "https://cdn.pixabay.com/photo/2020/02/16/20/29/nyc-4854718_1280.jpg"

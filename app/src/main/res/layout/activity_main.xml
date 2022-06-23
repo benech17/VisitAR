@@ -33,9 +33,10 @@
 
         <Button
             android:id="@+id/buttonMap"
-            android:layout_width="wrap_content"
+            android:layout_width="123dp"
             android:layout_height="wrap_content"
-            android:text="Map" />
+            android:text="Map"
+            android:visibility="gone"/>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

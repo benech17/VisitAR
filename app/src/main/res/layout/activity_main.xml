@@ -8,39 +8,35 @@
 
 
     <TextView
-        android:id="@+id/app_title"
+        android:id="@+id/page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/main_page_title"
         android:layout_marginLeft="@dimen/default_margin"
         android:layout_marginTop="@dimen/default_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/DefaultTextStyle" />
+        style="@style/TitleTextStyle" />
 
-    <TextView
-        android:id="@+id/page_title"
-        style="@style/TitleTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_page_title"
-        app:layout_constraintStart_toStartOf="@+id/app_title"
-        app:layout_constraintTop_toBottomOf="@+id/app_title" />
+
+    <ImageView
+        android:layout_width="73dp"
+        android:layout_height="75dp"
+        android:src="@mipmap/ic_logo"
+        app:layout_constraintEnd_toEndOf="parent"></ImageView>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp" />
+        android:layout_marginTop="100dp" >
 
-    <Button
-        android:id="@+id/buttonMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:text="Map"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/buttonMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Map" />
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

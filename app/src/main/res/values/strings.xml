@@ -18,6 +18,7 @@
     <!-- Parcours customize -->
     <string name="item_parcours_name">Nom du parcours</string>
     <string name="item_parcours_description">description du parcours</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="item_parcours_distance">distance du parcours</string>
+    <string name="item_parcours_temps">durée du parcours</string>
+
 </resources>

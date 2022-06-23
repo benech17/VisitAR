@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         //injecter le fragment dans notre boite
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, MainFragment())
+        transaction.replace(R.id.fragment_container, MainFragment(this))
         transaction.addToBackStack(null)
         transaction.commit()
     }

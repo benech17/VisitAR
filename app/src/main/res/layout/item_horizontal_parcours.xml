@@ -13,6 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/parcours_1" />
+        android:src="@drawable/ndp1650" />
 
 </androidx.cardview.widget.CardView>

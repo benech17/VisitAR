@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import fr.yaniv.visitar.ARactivity
 import fr.yaniv.visitar.R
 import fr.yaniv.visitar.databinding.FragmentCameraBinding
 import fr.yaniv.visitar.databinding.FragmentInformationBinding
@@ -31,10 +32,12 @@ class InformationFragment : Fragment() {
         _binding = FragmentInformationBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textInformations
-        informationViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        var arActivity = activity as ARactivity;
+        _binding!!.textInformations.text = arActivity.waypoint.description;
+        _binding!!.textInformationsHoraire.text = arActivity.waypoint.horaires;
+        _binding!!.textInformationsAffluence.text = arActivity.waypoint.affluence;
+        _binding!!.textInformationsTarif.text = arActivity.waypoint.tarif;
+
         return root
     }
 

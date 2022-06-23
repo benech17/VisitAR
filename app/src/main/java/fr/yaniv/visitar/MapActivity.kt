@@ -128,6 +128,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.lang.Exception
 import java.util.*
 import java.util.Locale.FRENCH
 
@@ -855,11 +856,26 @@ class MapActivity : AppCompatActivity() {
         super.onDestroy()
         MapboxNavigationProvider.destroy()
         mapboxReplayer.finish()
-        maneuverApi.cancel()
-        routeLineApi.cancel()
-        routeLineView.cancel()
-        speechApi.cancel()
-        voiceInstructionsPlayer.shutdown()
+        try {
+            maneuverApi.cancel()
+        } catch (e: Exception) {
+        }
+        try {
+            routeLineApi.cancel()
+        } catch (e: Exception) {
+        }
+        try {
+            routeLineView.cancel()
+        } catch (e: Exception) {
+        }
+        try {
+            speechApi.cancel()
+        } catch (e: Exception) {
+        }
+        try {
+            voiceInstructionsPlayer.shutdown()
+        } catch (e: Exception) {
+        }
     }
 
     override fun onRequestPermissionsResult(

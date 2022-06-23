@@ -1,14 +1,18 @@
 package fr.yaniv.visitar.adapter
 
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import fr.yaniv.visitar.MainActivity
+import fr.yaniv.visitar.MapActivity
 import fr.yaniv.visitar.ParcoursModel
 import fr.yaniv.visitar.R
 
@@ -30,6 +34,8 @@ class ParcoursAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+
+
         return ViewHolder(view)
     }
 
@@ -46,6 +52,12 @@ class ParcoursAdapter(
         holder.parcoursDistance?.text = currentParcours.distance
         holder.parcoursTemps?.text = currentParcours.duree
 
+
+        holder.parcoursImage.setOnClickListener {
+                val switchActivityIntent = Intent(context, MapActivity::class.java)
+            context.startActivity(switchActivityIntent)
+
+        }
     }
 
     override fun getItemCount(): Int {
